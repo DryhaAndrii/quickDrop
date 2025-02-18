@@ -1,0 +1,24 @@
+# Корневой конфигурационный файл EditorConfig
+root = true
+
+# Правила для всех файлов в проекте
+[*]
+indent_style = space  # Использовать пробелы для отступов
+indent_size = 4        # Размер отступа 4 пробела
+end_of_line = lf       # Конец строки - LF
+charset = utf-8        # Кодировка UTF-8
+trim_trailing_whitespace = true  # Удаление пробелов в конце строки
+insert_final_newline = true       # Добавление пустой строки в конце файла
+
+# Правила для конкретных типов файлов
+[*.md]
+indent_style = space
+indent_size = 2
+
+[*.json]
+indent_style = space
+indent_size = 2
+
+[*.yml]
+indent_style = space
+indent_size = 2
