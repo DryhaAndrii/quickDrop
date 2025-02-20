@@ -1,14 +1,13 @@
 import type { Metadata } from 'next'
 import { Montserrat } from 'next/font/google'
+import { ThemeProvider } from "next-themes";
 import './globals.css'
-import Header from './components/header/header'
-import CentralPanel from './components/centralPanel/centralPanel'
+import ThemeUpdater from './components/themeUpdater/themeUpdater';
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
   subsets: ['latin'],
 })
-
 
 export const metadata: Metadata = {
   title: 'Quick Drop | Fast File Sharing',
@@ -23,6 +22,8 @@ export const metadata: Metadata = {
   ],
 }
 
+
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,12 +32,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${montserrat.variable} antialiased bg-gradient-light dark:bg-gradient-dark`}
+        className={`${montserrat.variable} antialiased bg-body-gradient`}
       >
-        <CentralPanel>
-          <Header />
+        <ThemeProvider attribute="class" defaultTheme="system">
+        <ThemeUpdater />
           {children}
-        </CentralPanel>
+        </ThemeProvider>
       </body>
     </html>
   )
