@@ -1,12 +1,22 @@
 interface ButtonProps {
   children?: React.ReactNode
   variant?: 'default' | 'fullRounded'
-  type?: 'button' | 'submit',
+  type?: 'button' | 'submit'
   onClick?: () => void
 }
 
-export default function Button({ onClick, children, variant = 'default', type = 'button' }: ButtonProps) {
-  const baseStyles = 'size-full flex justify-center items-center  shadow-md transition bg-foreground text-background hover:opacity-80 dark:bg-white'
+export default function Button({
+  onClick,
+  children,
+  variant = 'default',
+  type = 'button',
+}: ButtonProps) {
+  const baseStyles = `
+    size-full flex justify-center items-center transition
+    bg-foreground text-background
+    hover:translate-y-[-2px] hover:shadow-hoverShadow
+    active:translate-y-[2px] active:shadow-activeShadow
+  `
   const variants = {
     default: 'rounded-lg',
     fullRounded: 'rounded-full',

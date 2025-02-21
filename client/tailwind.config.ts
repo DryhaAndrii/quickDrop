@@ -12,6 +12,8 @@ export default {
       boxShadow: {
         centralPanelShadow: "var(--central-panel-shadow)",
         inputShadow: "var(--input-shadow)",
+        hoverShadow:"var(--hover-shadow)",
+        activeShadow:"var(--active-shadow)"
       },
       dropShadow: {
         textShadow: "var(--text-shadow)",
@@ -26,7 +28,6 @@ export default {
       //================colors===================
       colors: {
         background: "var(--background)",
-        background2: "var(--background2)",
         foreground: "var(--foreground)",
       },
     },
