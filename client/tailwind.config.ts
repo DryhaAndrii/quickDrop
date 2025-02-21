@@ -10,6 +10,7 @@ export default {
     extend: {
       //================shadows===================
       boxShadow: {
+        defaultShadow: "var(--default-shadow)",
         centralPanelShadow: "var(--central-panel-shadow)",
         inputShadow: "var(--input-shadow)",
         hoverShadow:"var(--hover-shadow)",

@@ -21,6 +21,8 @@
 
   --input-shadow: inset 0px 0px 3px var(--foreground);
 
+  --default-shadow:0px 0px 6px 0px var(--foreground);
+
   --hover-shadow: 0px 4px 10px 0px var(--foreground);
   --active-shadow: inset 0px 0px 6px 0px var(--background);
 }
@@ -37,11 +39,13 @@
     #0f1a1f 100%
   );
 
-  --central-panel-shadow: 4px 4px 14px 0px var(--foreground), 0 0 20px 2px var(--background);
+  --central-panel-shadow: 1px 1px 14px 0px var(--foreground), 0 0 20px 2px var(--background);
 
   --text-shadow: 0px 0px 2px var(--foreground);
 
   --input-shadow: inset 0px 0px 3px var(--foreground);
+
+  --default-shadow:0px 0px 6px 0px var(--foreground);
 
   --hover-shadow: 0px 4px 10px 0px var(--foreground);
   --active-shadow: inset 0px 0px 6px 0px var(--background);
@@ -52,6 +56,7 @@ body {
   color: var(--font-montserrat);
   font-family: Arial, Helvetica, sans-serif;
 }
+
 
 * {
   font-family: var(--font-montserrat), sans-serif;
