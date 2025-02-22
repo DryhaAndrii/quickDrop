@@ -8,7 +8,7 @@ export default {
   ],
   theme: {
     extend: {
-      //================shadows===================
+      //================shadows====================
       boxShadow: {
         defaultShadow: "var(--default-shadow)",
         centralPanelShadow: "var(--central-panel-shadow)",
