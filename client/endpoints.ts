@@ -1,1 +1,2 @@
-export const roomsEndpoint = 'rooms';
+export const joinRoomEndpoint = 'rooms/join';
+export const createRoomEndpoint = 'rooms/create';

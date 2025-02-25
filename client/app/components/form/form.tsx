@@ -12,13 +12,11 @@ export default function Form({ children, onSubmit }: FormProps) {
     const formData = new FormData(event.currentTarget)
     const data = Object.fromEntries(formData.entries());
 
-    console.log(data);
-
     onSubmit(data)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grow flex flex-col gap-5 justify-center">
+    <form onSubmit={handleSubmit} className="grow flex flex-col gap-10 justify-evenly">
       {children}
     </form>
   )

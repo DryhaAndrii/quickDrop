@@ -14,7 +14,8 @@ export default {
         centralPanelShadow: "var(--central-panel-shadow)",
         inputShadow: "var(--input-shadow)",
         hoverShadow:"var(--hover-shadow)",
-        activeShadow:"var(--active-shadow)"
+        activeShadow:"var(--active-shadow)",
+        insetShadow:"var(--inset-shadow)"
       },
       dropShadow: {
         textShadow: "var(--text-shadow)",
