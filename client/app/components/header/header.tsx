@@ -1,6 +1,6 @@
 'use client'
 import { Roboto } from 'next/font/google'
-import ThemeSwitcher from '../themeSwitcher/themeSwitcher'
+import {ThemeSwitcher} from '@/app/components/theme/theme'
 
 
 const roboto = Roboto({

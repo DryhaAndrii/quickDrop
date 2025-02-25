@@ -16,7 +16,7 @@ export default function Form({ children, onSubmit }: FormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grow flex flex-col gap-10 justify-evenly">
+    <form onSubmit={handleSubmit} className="grow flex flex-col justify-evenly">
       {children}
     </form>
   )
