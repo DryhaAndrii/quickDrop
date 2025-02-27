@@ -28,7 +28,7 @@ export class RoomsController {
     })
 
     return res.json({
-      message: 'User joined the room successfully!',
+      message: 'Room created successfully!',
       token,
       data: body,
     })

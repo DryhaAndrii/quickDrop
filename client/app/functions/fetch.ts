@@ -1,10 +1,8 @@
-import toast from 'react-hot-toast'
-
 export async function fetchData<T>(
   endpoint: string,
   showLoading: () => void,
   hideLoading: () => void,
-  options?: RequestInit,
+  options?: object,
 ): Promise<T> {
   showLoading()
   try {
@@ -13,7 +11,8 @@ export async function fetchData<T>(
     })
 
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
+      const errorData = await response.json()
+      throw new Error(errorData.message)
     }
 
     return await response.json()

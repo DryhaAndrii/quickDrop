@@ -28,43 +28,39 @@ export default function AuthForm({ handleSubmit }: AuthFormProps) {
         <Switcher setSelectedForm={setSelectedForm} />
       </div>
 
-      {selectedForm === 0 ? (
-        <Form onSubmit={submitHandler}>
-          <h2 className='text-center font-bold text-foreground text-3xl drop-shadow-textShadow'>Join room</h2>
-          <div className="w-[95%] flex flex-col gap-8 m-0 mx-auto">
-            <Input placeholder="Room id" variant="fullRounded" name="roomId" maxLength={10} />
-            <Input
-              placeholder="Your nickname"
-              variant="fullRounded"
-              name="nickName"
-              maxLength={20}
-            />
-          </div>
-          <div className="w-[50%] h-10 justify-center m-0 mx-auto">
-            <Button variant="fullRounded" type="submit">
-              Join
-            </Button>
-          </div>
-        </Form>
-      ) : (
-        <Form onSubmit={submitHandler}>
-          <h2 className='text-center font-bold text-foreground text-2xl drop-shadow-textShadow'>Create room</h2>
-          <div className="w-[95%] flex flex-col gap-8 m-0 mx-auto">
-            <Input placeholder="Room id" variant="fullRounded" name="roomId" maxLength={10} />
-            <Input
-              placeholder="Your nickname"
-              variant="fullRounded"
-              name="nickName"
-              maxLength={20}
-            />
-          </div>
-          <div className="w-[50%] h-10 justify-center m-0 mx-auto">
-            <Button variant="fullRounded" type="submit">
-              Create
-            </Button>
-          </div>
-        </Form>
-      )}
+      <Form onSubmit={submitHandler}>
+        <h2 className="text-center font-bold text-foreground text-2xl drop-shadow-textShadow">
+          {selectedForm === 0 ? 'Join room' : 'Create room'}
+        </h2>
+        <div className="w-[95%] flex flex-col gap-4 m-0 mx-auto">
+          <Input
+            placeholder={selectedForm === 0 ? 'Room id' : 'Come up with a room id'}
+            variant="fullRounded"
+            name="roomId"
+            maxLength={10}
+          />
+
+          <Input
+            placeholder={
+              selectedForm === 0 ? 'Room password' : 'Come up with a password for the room'
+            }
+            variant="fullRounded"
+            name="password"
+            maxLength={10}
+          />
+          <Input
+            placeholder={selectedForm === 0 ? 'Your nickname' : 'Come up with your nickname'}
+            variant="fullRounded"
+            name="nickName"
+            maxLength={20}
+          />
+        </div>
+        <div className="w-[50%] h-10 justify-center m-0 mx-auto">
+          <Button variant="fullRounded" type="submit">
+            {selectedForm === 0 ? 'Join' : 'Create'}
+          </Button>
+        </div>
+      </Form>
     </>
   )
 }

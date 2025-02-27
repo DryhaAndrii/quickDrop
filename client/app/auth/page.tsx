@@ -13,15 +13,15 @@ export default function AuthPage() {
   const handleSubmit = async (formData: object, url: string) => {
     const options = {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),
     }
     try {
-      const response = await fetchData(url, showLoading, hideLoading, options)
-      toast(`${response}`)
+      const response: ServerResponse = await fetchData(url, showLoading, hideLoading, options)
+      toast(`${response.message}`)
     } catch (error) {
       toast.error(`Error: ${error}`)
-      console.error('Error submitting form:', error)
     }
   }
 
@@ -30,7 +30,7 @@ export default function AuthPage() {
       <Loading isShow={isShow} />
       <div className="size-full h-[80%]">
         <CentralPanel>
-          <div className='flex flex-col justify-between gap-1 p-5 size-full'>
+          <div className="flex flex-col justify-between gap-1 p-5 size-full">
             <Header />
 
             <AuthForm handleSubmit={handleSubmit} />
