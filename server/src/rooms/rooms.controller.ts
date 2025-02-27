@@ -1,11 +1,49 @@
-import { Body, Controller, Post } from '@nestjs/common'
-import { JoinRoomDto } from './dto/join-room.dto'
+import { Body, Controller, Post, Res, Get, Req, UnauthorizedException } from '@nestjs/common'
+import { Response } from 'express'
+import { JwtService } from '@nestjs/jwt'
+import { RoomDto } from './dto/room.dto'
+
+interface RequestWithCookies extends Request {
+  cookies: { [key: string]: string }
+}
 
 @Controller('rooms')
 export class RoomsController {
-  @Post()
-  joinRoom(@Body() body: JoinRoomDto) {
-    console.log('Received data:', body)
+  constructor(private readonly jwtService: JwtService) {}
+
+  @Post('join')
+  joinRoom(@Body() body: RoomDto) {
     return { message: 'User joined the room successfully!', data: body }
+  }
+
+  @Post('create')
+  createRoom(@Body() body: RoomDto, @Res() res: Response) {
+    const token = this.jwtService.sign({ userId: body.roomId + body.nickName })
+
+    res.cookie('room_token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+    })
+
+    return res.json({
+      message: 'User joined the room successfully!',
+      token,
+      data: body,
+    })
+  }
+
+  @Get('checkToken')
+  protectedRoute(@Req() req: RequestWithCookies) {
+    const token = req.cookies['room_token']
+    if (!token) throw new UnauthorizedException('No auth token')
+
+    try {
+      const user: { userId: string } = this.jwtService.verify(token)
+      return { message: 'Access granted!', user }
+    } catch {
+      throw new UnauthorizedException('Invalid token')
+    }
   }
 }
