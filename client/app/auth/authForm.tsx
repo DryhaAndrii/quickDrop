@@ -32,7 +32,7 @@ export default function AuthForm({ handleSubmit }: AuthFormProps) {
         <h2 className="text-center font-bold text-foreground text-2xl drop-shadow-textShadow">
           {selectedForm === 0 ? 'Join room' : 'Create room'}
         </h2>
-        <div className="w-[95%] flex flex-col gap-4 m-0 mx-auto">
+        <div className="w-[95%] flex flex-col gap-3 m-0 mx-auto">
           <Input
             placeholder={selectedForm === 0 ? 'Room id' : 'Come up with a room id'}
             variant="fullRounded"

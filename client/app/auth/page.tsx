@@ -4,11 +4,13 @@ import CentralPanel from '@/app/components/centralPanel/centralPanel'
 import Header from '@/app/components/header/header'
 import toast from 'react-hot-toast'
 import Loading, { useLoading } from '@/app/components/loading/loading'
-import { fetchData } from '@/app/functions/fetch'
+import { fetchData } from '@/app/functionsAndHooks/fetch'
 import AuthForm from './authForm'
+import { useRouter } from 'next/navigation'
 
 export default function AuthPage() {
   const { hideLoading, showLoading, isShow } = useLoading()
+  const router = useRouter()
 
   const handleSubmit = async (formData: object, url: string) => {
     const options = {
@@ -17,20 +19,21 @@ export default function AuthPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),
     }
-    try {
-      const response: ServerResponse = await fetchData(url, showLoading, hideLoading, options)
-      toast(`${response.message}`)
-    } catch (error) {
-      toast.error(`Error: ${error}`)
+
+    const response = await fetchData<ServerResponse>(url, showLoading, hideLoading, options)
+
+    if (response) {
+      toast.success(response.message)
+      router.push('/')
     }
   }
 
   return (
     <div className="w-[95%] max-w-96 flex justify-center items-center m-auto h-screen">
       <Loading isShow={isShow} />
-      <div className="size-full h-[80%]">
+      <div className="w-full">
         <CentralPanel>
-          <div className="flex flex-col justify-between gap-1 p-5 size-full">
+          <div className="flex flex-col justify-between gap-3 px-5 py-10 size-full">
             <Header />
 
             <AuthForm handleSubmit={handleSubmit} />

@@ -18,7 +18,10 @@ export class RoomsController {
 
   @Post('create')
   createRoom(@Body() body: RoomDto, @Res() res: Response) {
-    const token = this.jwtService.sign({ userId: body.roomId + body.nickName })
+    const token = this.jwtService.sign({
+      userId: body.nickName,
+      roomId: body.roomId,
+    })
 
     res.cookie('room_token', token, {
       httpOnly: true,
@@ -40,8 +43,9 @@ export class RoomsController {
     if (!token) throw new UnauthorizedException('No auth token')
 
     try {
-      const user: { userId: string } = this.jwtService.verify(token)
-      return { message: 'Access granted!', user }
+      const user = this.jwtService.verify<{ userId: string; roomId: string }>(token)
+
+      return { message: 'Authenticated!', user }
     } catch {
       throw new UnauthorizedException('Invalid token')
     }
