@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import { Montserrat } from 'next/font/google'
 import './globals.css'
-import {ThemeProvider} from './components/theme/theme'
+import { ThemeProvider } from './components/theme/theme'
 import Toaster from './components/toaster/toaster'
+import AuthProvider from './components/authProvider/authProvider'
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -30,9 +31,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.variable} antialiased bg-body-gradient`}>
-        <Toaster/>
+        <Toaster />
         <ThemeProvider>
-          {children}
+          <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
       </body>
     </html>

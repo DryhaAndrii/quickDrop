@@ -1,13 +1,14 @@
-import { useRouter } from 'next/navigation'
+'use client'
+import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { auth, checkRoomAuthEndpoint } from '@/endpoints'
+import { authPath, checkRoomAuthEndpoint } from '@/endpointsAndPaths'
 import { API_URL } from '@/environments'
 import { fetchData } from './fetch'
 
 export function useRoomAuth() {
   const router = useRouter()
   const isChecking = useRef(false)
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
+  const pathname = usePathname()
 
   const checkAuth = useCallback(async () => {
     if (isChecking.current) return
@@ -24,17 +25,21 @@ export function useRoomAuth() {
     const response = await fetchData<ServerResponse>(url, undefined, undefined, options)
 
     if (!response) {
-      setIsAuthenticated(false)
-      router.push(auth)
-    } else {
-      console.log(response.message)
-      setIsAuthenticated(true)
+      if (pathname !== authPath) {
+        router.push(authPath)
+      }
+
+      return
     }
+
+    console.log(response.message)
+    if (pathname === authPath) {
+      router.push('/')
+    }
+    console.log('Pathname:', pathname, 'AuthPath:', authPath)
   }, [router])
 
   useEffect(() => {
     checkAuth()
   }, [checkAuth])
-
-  return isAuthenticated
 }

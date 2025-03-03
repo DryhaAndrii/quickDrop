@@ -2,7 +2,7 @@
 import Button from '@/app/components/button/button'
 import Form from '@/app/components/form/form'
 import Input from '@/app/components/input/input'
-import { createRoomEndpoint, joinRoomEndpoint } from '@/endpoints'
+import { createRoomEndpoint, joinRoomEndpoint } from '@/endpointsAndPaths'
 import { API_URL } from '@/environments'
 import { useState } from 'react'
 import Switcher from './switcher'
