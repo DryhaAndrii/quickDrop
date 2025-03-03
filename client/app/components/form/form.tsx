@@ -2,7 +2,7 @@
 
 interface FormProps {
   children?: React.ReactNode
-  onSubmit: (data: object) => void
+  onSubmit: (data: any) => void
 }
 
 export default function Form({ children, onSubmit }: FormProps) {
@@ -10,7 +10,7 @@ export default function Form({ children, onSubmit }: FormProps) {
     event.preventDefault()
 
     const formData = new FormData(event.currentTarget)
-    const data = Object.fromEntries(formData.entries());
+    const data = Object.fromEntries(formData.entries())
 
     onSubmit(data)
   }

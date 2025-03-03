@@ -7,19 +7,29 @@ import Loading, { useLoading } from '@/app/components/loading/loading'
 import { fetchData } from '@/app/functionsAndHooks/fetch'
 import AuthForm from './authForm'
 import { useRouter } from 'next/navigation'
+import { authFormType } from '@/types/authForm'
 
 export default function AuthPage() {
   const { hideLoading, showLoading, isShow } = useLoading()
   const router = useRouter()
 
-  const handleSubmit = async (formData: object, url: string) => {
+  const handleSubmit = async (data: authFormType, url: string) => {
+    const body = {
+      room: {
+        roomId: data.roomId,
+        password: data.password,
+      },
+      user: {
+        nickname: data.nickname,
+      },
+    }
     const options = {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(body),
     }
-
+    console.log('body:', body)
     const response = await fetchData<ServerResponse>(url, showLoading, hideLoading, options)
 
     if (response) {

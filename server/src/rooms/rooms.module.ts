@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
-import { RoomsController } from './rooms.controller'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Room } from '@/src/rooms/room.entity'
 import { User } from '@/src/users/user.entity'
 import { RoomsService } from './rooms.service'
+import { CreateRoomController } from './controllers/create-room.controller'
+import { JoinRoomController } from './controllers/join-room.controller'
+import { CheckTokenController } from './controllers/check-token.controller'
 
 @Module({
   imports: [
@@ -15,6 +17,6 @@ import { RoomsService } from './rooms.service'
     TypeOrmModule.forFeature([Room, User]),
   ],
   providers: [RoomsService],
-  controllers: [RoomsController],
+  controllers: [CreateRoomController, JoinRoomController, CheckTokenController],
 })
 export class RoomsModule {}

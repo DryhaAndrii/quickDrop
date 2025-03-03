@@ -10,9 +10,6 @@ export class User {
   @Column()
   username: string
 
-  @Column()
-  email: string
-
   @ManyToMany(() => Room, (room) => room.users)
   @JoinTable()
   rooms: Room[]

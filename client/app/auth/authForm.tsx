@@ -6,9 +6,10 @@ import { createRoomEndpoint, joinRoomEndpoint } from '@/endpointsAndPaths'
 import { API_URL } from '@/environments'
 import { useState } from 'react'
 import Switcher from './switcher'
+import { authFormType } from '@/types/authForm'
 
 interface AuthFormProps {
-  handleSubmit: (data: object, url: string) => void
+  handleSubmit: (data: authFormType, url: string) => void
 }
 
 export default function AuthForm({ handleSubmit }: AuthFormProps) {
@@ -19,8 +20,8 @@ export default function AuthForm({ handleSubmit }: AuthFormProps) {
     if (selectedForm === 0) {
       url = `${API_URL}/${joinRoomEndpoint}`
     }
-
-    handleSubmit(data, url)
+    const newData: authFormType = data as authFormType
+    handleSubmit(newData, url)
   }
   return (
     <>
@@ -51,7 +52,7 @@ export default function AuthForm({ handleSubmit }: AuthFormProps) {
           <Input
             placeholder={selectedForm === 0 ? 'Your nickname' : 'Come up with your nickname'}
             variant="fullRounded"
-            name="nickName"
+            name="nickname"
             maxLength={20}
           />
         </div>

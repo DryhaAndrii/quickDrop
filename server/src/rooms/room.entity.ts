@@ -8,10 +8,7 @@ export class Room {
   id: number
 
   @Column()
-  name: string
-
-  @Column()
-  owner: string
+  roomId: string
 
   @Column()
   password: string
