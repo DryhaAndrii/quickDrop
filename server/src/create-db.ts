@@ -7,15 +7,12 @@ import * as dotenv from 'dotenv'
 
 dotenv.config()
 
-const { DB_USER, DB_PASSWORD, DB_NAME } = process.env
+const { DB_URL, DB_NAME } = process.env
 
-console.log('envs:', DB_USER, DB_PASSWORD, DB_NAME)
+console.log('envs:', DB_URL)
 
 const client = new Client({
-  host: 'localhost',
-  port: 5432,
-  user: DB_USER,
-  password: DB_PASSWORD,
+  connectionString: DB_URL,
 })
 
 client

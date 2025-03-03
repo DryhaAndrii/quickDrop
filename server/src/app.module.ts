@@ -17,11 +17,7 @@ import { User } from './users/user.entity'
     RoomsModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      url: process.env.DB_URL,
       entities: [Room, User],
       synchronize: true,
     }),
