@@ -9,8 +9,12 @@ import AuthForm from './authForm'
 import { useRouter } from 'next/navigation'
 import { authFormType } from '@/types/authForm'
 
+import { useAtom } from 'jotai'
+import { roomNameAtom } from '@/store/roomName'
+
 export default function AuthPage() {
   const { hideLoading, showLoading, isShow } = useLoading()
+  const [roomName, setRoomName] = useAtom(roomNameAtom)
   const router = useRouter()
 
   const handleSubmit = async (data: authFormType, url: string) => {
@@ -30,9 +34,10 @@ export default function AuthPage() {
       body: JSON.stringify(body),
     }
     console.log('body:', body)
-    const response = await fetchData<ServerResponse>(url, showLoading, hideLoading, options)
+    const response = await fetchData<any>(url, showLoading, hideLoading, options)
 
     if (response) {
+      setRoomName(response.room.roomId)
       toast.success(response.message)
       router.push('/')
     }

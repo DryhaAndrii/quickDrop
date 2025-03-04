@@ -1,5 +1,4 @@
-// src/rooms/room.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm'
 import { User } from '@/src/users/user.entity'
 
 @Entity()
@@ -17,5 +16,6 @@ export class Room {
   created_at: Date
 
   @ManyToMany(() => User, (user) => user.rooms)
+  @JoinTable()
   users: User[]
 }

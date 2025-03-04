@@ -18,7 +18,7 @@ const client = new Client({
 client
   .connect()
   .then(() => {
-    return client.query('SELECT 1 FROM pg_database WHERE datname = $1', ['quickDropDB'])
+    return client.query('SELECT 1 FROM pg_database WHERE datname = $1', [DB_NAME])
   })
   .then((res) => {
     if (res.rowCount === 0) {

@@ -7,6 +7,7 @@ import { RoomsService } from './rooms.service'
 import { CreateRoomController } from './controllers/create-room.controller'
 import { JoinRoomController } from './controllers/join-room.controller'
 import { CheckTokenController } from './controllers/check-token.controller'
+import { UsersModule } from '../users/users.module'
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CheckTokenController } from './controllers/check-token.controller'
       signOptions: { expiresIn: '1h' },
     }),
     TypeOrmModule.forFeature([Room, User]),
+    UsersModule,
   ],
   providers: [RoomsService],
   controllers: [CreateRoomController, JoinRoomController, CheckTokenController],

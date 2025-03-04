@@ -8,7 +8,7 @@ export class User {
   id: number
 
   @Column()
-  username: string
+  nickname: string
 
   @ManyToMany(() => Room, (room) => room.users)
   @JoinTable()

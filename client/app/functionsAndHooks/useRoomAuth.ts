@@ -4,11 +4,14 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { authPath, checkRoomAuthEndpoint } from '@/endpointsAndPaths'
 import { API_URL } from '@/environments'
 import { fetchData } from './fetch'
+import { useAtom } from 'jotai'
+import { roomNameAtom } from '@/store/roomName'
 
 export function useRoomAuth() {
   const router = useRouter()
   const isChecking = useRef(false)
   const pathname = usePathname()
+  const [roomName, setRoomName] = useAtom(roomNameAtom)
 
   const checkAuth = useCallback(async () => {
     if (isChecking.current) return
@@ -22,21 +25,19 @@ export function useRoomAuth() {
       headers: { 'Content-Type': 'application/json' },
     }
 
-    const response = await fetchData<ServerResponse>(url, undefined, undefined, options)
+    const response = await fetchData<any>(url, undefined, undefined, options)
 
     if (!response) {
       if (pathname !== authPath) {
         router.push(authPath)
       }
-
       return
     }
 
-    console.log(response.message)
+    setRoomName(response.user.roomId)
     if (pathname === authPath) {
       router.push('/')
     }
-    console.log('Pathname:', pathname, 'AuthPath:', authPath)
   }, [router])
 
   useEffect(() => {
