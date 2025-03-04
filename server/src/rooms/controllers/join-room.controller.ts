@@ -24,13 +24,6 @@ export class JoinRoomController {
     try {
       const { user, room } = body
 
-      // 1️⃣ Ищем пользователя, если нет — создаем
-      let existingUser = await this.usersService.findByNickname(user.nickname)
-
-      if (existingUser) throw new Error('User with this nickname already exists.')
-
-      existingUser = await this.usersService.createUser(user.nickname)
-
       // 2️⃣ Ищем комнату
       const existingRoom = await this.roomsService.findByRoomId(room.roomId)
       if (!existingRoom) {
@@ -40,6 +33,13 @@ export class JoinRoomController {
       if (existingRoom.password && existingRoom.password !== body.room.password) {
         throw new Error('Incorrect room password')
       }
+
+      // 1️⃣ Ищем пользователя, если нет — создаем
+      let existingUser = await this.usersService.findByNickname(user.nickname)
+
+      if (existingUser) throw new Error('User with this nickname already exists.')
+
+      existingUser = await this.usersService.createUser(user.nickname)
 
       // 3️⃣ Добавляем пользователя в комнату
       await this.roomsService.addUserToRoom(existingRoom.id, existingUser.id)
