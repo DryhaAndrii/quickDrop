@@ -18,11 +18,9 @@ export class CreateRoomController {
 
   @Post('create')
   async createRoom(@Body() body: bodyType, @Res() res: Response) {
-    console.log('BODY:', body)
     try {
       const { user, room } = body
 
-      // Создаём комнату и пользователя
       const { room: newRoom, user: newUser } = await this.roomsService.createRoom(room, user)
 
       const token = this.jwtService.sign({

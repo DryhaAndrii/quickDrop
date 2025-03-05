@@ -24,7 +24,6 @@ export class JoinRoomController {
     try {
       const { user, room } = body
 
-      // 2️⃣ Ищем комнату
       const existingRoom = await this.roomsService.findByRoomId(room.roomId)
       if (!existingRoom) {
         throw new NotFoundException('Room not found')
@@ -34,23 +33,19 @@ export class JoinRoomController {
         throw new Error('Incorrect room password')
       }
 
-      // 1️⃣ Ищем пользователя, если нет — создаем
       let existingUser = await this.usersService.findByNickname(user.nickname)
 
       if (existingUser) throw new Error('User with this nickname already exists.')
 
       existingUser = await this.usersService.createUser(user.nickname)
 
-      // 3️⃣ Добавляем пользователя в комнату
       await this.roomsService.addUserToRoom(existingRoom.id, existingUser.id)
 
-      // 4️⃣ Создаем JWT токен
       const token = this.jwtService.sign({
         userId: existingUser.id,
         roomId: existingRoom.id,
       })
 
-      // 5️⃣ Устанавливаем куку с токеном
       res.cookie('room_token', token, {
         httpOnly: true,
         secure: true,
