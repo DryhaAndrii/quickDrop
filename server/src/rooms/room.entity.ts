@@ -5,7 +5,7 @@ export class Room {
   id: number
 
   @Column()
-  roomId: string
+  roomName: string
 
   @Column()
   password: string
@@ -13,6 +13,6 @@ export class Room {
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date
 
-  @Column('text', { array: true, default: () => "'{}'" })
-  users: string[]
+  @Column('json', { default: () => "'[]'" })
+  users: { nickname: string; tokenIssuedAt: Date }[]
 }

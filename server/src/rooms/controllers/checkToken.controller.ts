@@ -1,7 +1,6 @@
 import { Controller, UnauthorizedException, Get, Req, Res } from '@nestjs/common'
 import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
-import { RoomsService } from '@/src/rooms/rooms.service'
 
 interface RequestWithCookies extends Request {
   cookies: { [key: string]: string }
@@ -9,10 +8,7 @@ interface RequestWithCookies extends Request {
 
 @Controller('rooms')
 export class CheckTokenController {
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly roomsService: RoomsService,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   @Get('checkToken')
   protectedRoute(@Req() req: RequestWithCookies, @Res() res: Response) {
@@ -20,11 +16,11 @@ export class CheckTokenController {
     if (!token) throw new UnauthorizedException('No auth token')
 
     try {
-      const user = this.jwtService.verify<{ userId: string; roomId: string }>(token)
+      const user = this.jwtService.verify<{ userId: string; roomName: string }>(token)
 
       const newToken = this.jwtService.sign({
         userId: user.userId,
-        roomId: user.roomId,
+        roomName: user.roomName,
       })
 
       res.cookie('room_token', newToken, {

@@ -21,7 +21,7 @@ export class JoinRoomController {
     try {
       const { nickname, room } = body
 
-      const existingRoom = await this.roomsService.findByRoomId(room.roomId)
+      const existingRoom = await this.roomsService.findByRoomName(room.roomName)
       if (!existingRoom) {
         throw new NotFoundException('Room not found')
       }
@@ -38,7 +38,7 @@ export class JoinRoomController {
 
       const token = this.jwtService.sign({
         nickname,
-        roomId: existingRoom.id,
+        roomName: existingRoom.roomName,
       })
 
       res.cookie('room_token', token, {

@@ -20,21 +20,17 @@ export class CreateRoomController {
   async createRoom(@Body() body: bodyType, @Res() res: Response) {
     try {
       const { nickname, room } = body
-
       const { room: newRoom } = await this.roomsService.createRoom(room, nickname)
-
       const token = this.jwtService.sign({
         nickname: nickname,
-        roomId: newRoom.roomId,
+        roomName: newRoom.roomName,
       })
-
       res.cookie('room_token', token, {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
         path: '/',
       })
-
       return res.json({
         message: 'Room created successfully!',
         token,

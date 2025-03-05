@@ -6,7 +6,6 @@ import { AppService } from './app.service'
 import { RoomsModule } from './rooms/rooms.module'
 import { Room } from './rooms/room.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
-
 @Module({
   imports: [
     ConfigModule.forRoot({
