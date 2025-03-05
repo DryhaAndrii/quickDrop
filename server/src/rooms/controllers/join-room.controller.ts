@@ -2,13 +2,11 @@ import { Body, Controller, Post, Res, NotFoundException } from '@nestjs/common'
 import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
 import { RoomsService } from '@/src/rooms/rooms.service'
-import { UsersService } from '@/src/users/users.service'
-import { RoomDto } from '@/src/rooms/dto/room.dto'
-import { UserDto } from '@/src/users/dto/user.dto'
+import { RoomDto } from '../dto/room.dto'
 
 interface bodyType {
   room: RoomDto
-  user: UserDto
+  nickname: string
 }
 
 @Controller('rooms')
@@ -16,13 +14,12 @@ export class JoinRoomController {
   constructor(
     private readonly jwtService: JwtService,
     private readonly roomsService: RoomsService,
-    private readonly usersService: UsersService,
   ) {}
 
   @Post('join')
   async joinRoom(@Body() body: bodyType, @Res() res: Response) {
     try {
-      const { user, room } = body
+      const { nickname, room } = body
 
       const existingRoom = await this.roomsService.findByRoomId(room.roomId)
       if (!existingRoom) {
@@ -33,16 +30,14 @@ export class JoinRoomController {
         throw new Error('Incorrect room password')
       }
 
-      let existingUser = await this.usersService.findByNickname(user.nickname)
+      const existingUser = await this.roomsService.findUserByNickname(existingRoom.id, nickname)
 
       if (existingUser) throw new Error('User with this nickname already exists.')
 
-      existingUser = await this.usersService.createUser(user.nickname)
-
-      await this.roomsService.addUserToRoom(existingRoom.id, existingUser.id)
+      await this.roomsService.addUserToRoom(existingRoom.id, nickname)
 
       const token = this.jwtService.sign({
-        userId: existingUser.id,
+        nickname,
         roomId: existingRoom.id,
       })
 

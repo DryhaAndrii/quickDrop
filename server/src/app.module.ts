@@ -6,7 +6,6 @@ import { AppService } from './app.service'
 import { RoomsModule } from './rooms/rooms.module'
 import { Room } from './rooms/room.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { User } from './users/user.entity'
 
 @Module({
   imports: [
@@ -18,7 +17,7 @@ import { User } from './users/user.entity'
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DB_URL,
-      entities: [Room, User],
+      entities: [Room],
       synchronize: true,
     }),
   ],

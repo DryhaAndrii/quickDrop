@@ -6,7 +6,7 @@ import { RoomDto } from '@/src/rooms/dto/room.dto'
 
 interface bodyType {
   room: RoomDto
-  user: { nickname: string }
+  nickname: string
 }
 
 @Controller('rooms')
@@ -19,12 +19,12 @@ export class CreateRoomController {
   @Post('create')
   async createRoom(@Body() body: bodyType, @Res() res: Response) {
     try {
-      const { user, room } = body
+      const { nickname, room } = body
 
-      const { room: newRoom, user: newUser } = await this.roomsService.createRoom(room, user)
+      const { room: newRoom } = await this.roomsService.createRoom(room, nickname)
 
       const token = this.jwtService.sign({
-        userId: newUser.nickname,
+        nickname: nickname,
         roomId: newRoom.roomId,
       })
 
@@ -39,7 +39,7 @@ export class CreateRoomController {
         message: 'Room created successfully!',
         token,
         room: newRoom,
-        user: newUser,
+        nickname,
       })
     } catch (err) {
       console.log(err)
