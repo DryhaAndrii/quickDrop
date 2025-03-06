@@ -4,7 +4,7 @@ interface CentralPanelProps {
 
 export default function CentralPanel({ children }: CentralPanelProps) {
   return (
-    <div className="size-full bg-central-panel-gradient rounded-xl shadow-centralPanelShadow">
+    <div className="w-full min-h-full bg-central-panel-gradient rounded-xl shadow-centralPanelShadow">
       {children}
     </div>
   )

@@ -1,7 +1,11 @@
 'use client'
 import { Roboto } from 'next/font/google'
-import {ThemeSwitcher} from '@/app/components/theme/theme'
-
+import { ThemeSwitcher } from '@/app/components/theme/theme'
+import { usePathname } from 'next/navigation'
+import { useAtom } from 'jotai'
+import { roomNameAtom } from '@/store/roomName'
+import HamburgerMenu from '../hamburgerMenu/hamburgerMenu'
+import LogoutButton from '../logoutButton/logoutButton'
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -9,16 +13,46 @@ const roboto = Roboto({
 })
 
 export default function Header() {
+  const pathname = usePathname()
+  const [roomName, setRoomName] = useAtom(roomNameAtom)
 
   return (
-    <header className="h-10 flex justify-between items-center">
-      <h1
-        className={`${roboto.className} grow text-5xl drop-shadow-textShadow text-foreground flex justify-center`}
-      >
-        QuickDrop
-      </h1>
-      <div className=" size-8">
-        <ThemeSwitcher />
+    <header className="min-h-10 flex flex-col md:flex-row justify-between items-center relative">
+      <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+        rel="stylesheet"
+      />
+      {pathname === '/auth' && (
+        <h2
+          className={`${roboto.className} w-full text-center text-5xl drop-shadow-textShadow text-foreground`}
+        >
+          QuickDrop
+        </h2>
+      )}
+      {pathname === '/' && (
+        <>
+          <h2
+            className={`${roboto.className} md:absolute md:left-0 text-4xl drop-shadow-textShadow text-foreground`}
+          >
+            QuickDrop
+          </h2>
+          <h1
+            className={`${roboto.className}
+      text-5xl drop-shadow-textShadow
+      text-foreground flex justify-center
+      break-all w-full
+
+      `}
+          >
+            {roomName}
+          </h1>
+        </>
+      )}
+
+      <div className="size-10 absolute right-0  top-1/2 transform -translate-y-1/2">
+        <HamburgerMenu>
+          <LogoutButton />
+        </HamburgerMenu>
       </div>
     </header>
   )

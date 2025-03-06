@@ -2,7 +2,6 @@
 import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { authPath, checkRoomAuthEndpoint } from '@/endpointsAndPaths'
-import { API_URL } from '@/environments'
 import { fetchData } from './fetch'
 import { useAtom } from 'jotai'
 import { roomNameAtom } from '@/store/roomName'
@@ -18,7 +17,7 @@ export function useRoomAuth() {
 
     isChecking.current = true
 
-    const url = `${API_URL}/${checkRoomAuthEndpoint}`
+    const url = checkRoomAuthEndpoint
     const options = {
       method: 'GET',
       credentials: 'include',
@@ -34,7 +33,7 @@ export function useRoomAuth() {
       return
     }
 
-    setRoomName(response.user.roomId)
+    setRoomName(response.user.roomName)
     if (pathname === authPath) {
       router.push('/')
     }

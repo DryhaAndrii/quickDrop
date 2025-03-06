@@ -8,35 +8,31 @@ interface RequestWithCookies extends Request {
 }
 
 @Controller('rooms')
-export class CheckTokenController {
+export class LogoutController {
   constructor(
     private readonly jwtService: JwtService,
     private readonly roomsService: RoomsService,
   ) {}
 
-  @Get('checkToken')
-  async checkToken(@Req() req: RequestWithCookies, @Res() res: Response) {
+  @Get('logout')
+  async logout(@Req() req: RequestWithCookies, @Res() res: Response) {
     const token = req.cookies['room_token']
     if (!token) throw new UnauthorizedException('No auth token')
 
     try {
       const user = this.jwtService.verify<{ nickname: string; roomName: string }>(token)
-      console.log('Checking token, user:', user)
-      await this.roomsService.updateTokenIssuedAt(user.roomName, user.nickname)
+      console.log('Logging out user:', user)
 
-      const newToken = this.jwtService.sign({
-        nickname: user.nickname,
-        roomName: user.roomName,
-      })
+      await this.roomsService.removeUserFromRoom(user.roomName, user.nickname)
 
-      res.cookie('room_token', newToken, {
+      res.clearCookie('room_token', {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
         path: '/',
       })
 
-      return res.json({ message: 'Token refreshed!', user, newToken })
+      return res.json({ message: 'User logged out successfully!' })
     } catch {
       throw new UnauthorizedException('Invalid token')
     }

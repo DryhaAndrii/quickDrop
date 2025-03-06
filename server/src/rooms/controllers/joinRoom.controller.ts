@@ -3,6 +3,7 @@ import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
 import { RoomsService } from '@/src/rooms/rooms.service'
 import { RoomDto } from '../dto/room.dto'
+import * as bcrypt from 'bcrypt'
 
 interface bodyType {
   room: RoomDto
@@ -26,8 +27,11 @@ export class JoinRoomController {
         throw new NotFoundException('Room not found')
       }
 
-      if (existingRoom.password && existingRoom.password !== body.room.password) {
-        throw new Error('Incorrect room password')
+      if (existingRoom.password) {
+        const isPasswordValid = await bcrypt.compare(body.room.password, existingRoom.password)
+        if (!isPasswordValid) {
+          throw new Error('Incorrect room password')
+        }
       }
 
       const existingUser = await this.roomsService.findUserByNickname(existingRoom.id, nickname)

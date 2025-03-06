@@ -1,5 +1,5 @@
 export interface authFormType {
-  roomId: string
+  roomName: string
   password: string
   nickname: string
 }

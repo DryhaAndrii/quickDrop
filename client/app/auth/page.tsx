@@ -20,12 +20,10 @@ export default function AuthPage() {
   const handleSubmit = async (data: authFormType, url: string) => {
     const body = {
       room: {
-        roomId: data.roomId,
+        roomName: data.roomName,
         password: data.password,
       },
-      user: {
-        nickname: data.nickname,
-      },
+      nickname: data.nickname,
     }
     const options = {
       method: 'POST',
@@ -33,11 +31,10 @@ export default function AuthPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     }
-    console.log('body:', body)
     const response = await fetchData<any>(url, showLoading, hideLoading, options)
 
     if (response) {
-      setRoomName(response.room.roomId)
+      setRoomName(response.room.roomName)
       toast.success(response.message)
       router.push('/')
     }

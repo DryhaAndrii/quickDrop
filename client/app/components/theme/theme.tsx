@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { ThemeProvider as NextThemesProvider, useTheme } from 'next-themes'
 import Button from '@/app/components/button/button'
+import GoogleIcon from '../googleIcon/googleIcon'
 
 export function ThemeUpdater() {
   const { theme, systemTheme } = useTheme()
@@ -46,8 +47,12 @@ export function ThemeSwitcher() {
 
   return (
     <Button onClick={themeButtonHandler}>
-      <span style={{ textShadow: `0px 0px 4px var(--background)` }}>
-        {currentTheme === 'dark' ? '🌞' : '🌙'}
+      <span className='flex justify-center items-center' style={{ textShadow: `0px 0px 4px var(--background)` }}>
+        {currentTheme === 'dark' ? (
+          <GoogleIcon iconName="light_mode" />
+        ) : (
+          <GoogleIcon iconName="dark_mode" />
+        )}
       </span>
     </Button>
   )

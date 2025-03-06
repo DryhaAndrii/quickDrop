@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Room } from './room.entity'
 import { RoomDto } from './dto/room.dto'
 import { Interval } from '@nestjs/schedule'
 import { ConfigService } from '@nestjs/config'
+import { hash } from 'bcrypt'
 
 @Injectable()
 export class RoomsService {
@@ -32,6 +33,32 @@ export class RoomsService {
     return null
   }
 
+  async updateTokenIssuedAt(roomName: string, nickname: string) {
+    console.log('Updating tokenIssuedAt, roomName:', roomName, 'nickname:', nickname)
+    const room = await this.roomsRepository.findOne({ where: { roomName } })
+    if (!room) throw new UnauthorizedException('Room not found')
+
+    room.users = room.users.map((user) =>
+      user.nickname === nickname ? { ...user, tokenIssuedAt: new Date() } : user,
+    )
+
+    await this.roomsRepository.save(room)
+  }
+
+  async removeUserFromRoom(roomName: string, nickname: string) {
+    const room = await this.roomsRepository.findOne({ where: { roomName } })
+
+    if (!room) throw new Error('Room not found')
+
+    room.users = room.users.filter((user) => user.nickname !== nickname)
+
+    if (room.users.length === 0) {
+      await this.roomsRepository.remove(room)
+    } else {
+      await this.roomsRepository.save(room)
+    }
+  }
+
   async addUserToRoom(id: number, nickname: string) {
     const room = await this.roomsRepository.findOne({ where: { id } })
 
@@ -50,9 +77,13 @@ export class RoomsService {
     if (existingRoom) {
       throw new Error('Room with this ID already exists. Please choose another one.')
     }
+
+    const saltRounds = 10
+    const hashedPassword = await hash(roomDto.password, saltRounds)
+
     const newRoom = this.roomsRepository.create({
       roomName: roomDto.roomName,
-      password: roomDto.password,
+      password: hashedPassword,
     })
     await this.roomsRepository.save(newRoom)
     await this.addUserToRoom(newRoom.id, nickname)

@@ -3,7 +3,6 @@ import Button from '@/app/components/button/button'
 import Form from '@/app/components/form/form'
 import Input from '@/app/components/input/input'
 import { createRoomEndpoint, joinRoomEndpoint } from '@/endpointsAndPaths'
-import { API_URL } from '@/environments'
 import { useState } from 'react'
 import Switcher from './switcher'
 import { authFormType } from '@/types/authForm'
@@ -16,10 +15,7 @@ export default function AuthForm({ handleSubmit }: AuthFormProps) {
   const [selectedForm, setSelectedForm] = useState(0)
 
   function submitHandler(data: object) {
-    let url = `${API_URL}/${createRoomEndpoint}`
-    if (selectedForm === 0) {
-      url = `${API_URL}/${joinRoomEndpoint}`
-    }
+    let url = selectedForm === 0 ? joinRoomEndpoint : createRoomEndpoint
     const newData: authFormType = data as authFormType
     handleSubmit(newData, url)
   }
@@ -37,7 +33,7 @@ export default function AuthForm({ handleSubmit }: AuthFormProps) {
           <Input
             placeholder={selectedForm === 0 ? 'Room id' : 'Come up with a room id'}
             variant="fullRounded"
-            name="roomId"
+            name="roomName"
             maxLength={10}
           />
 
