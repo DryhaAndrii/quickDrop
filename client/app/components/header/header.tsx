@@ -50,9 +50,7 @@ export default function Header() {
       )}
 
       <div className="size-10 absolute right-0  top-1/2 transform -translate-y-1/2">
-        <HamburgerMenu>
-          <LogoutButton />
-        </HamburgerMenu>
+        <HamburgerMenu>{pathname === '/' && <LogoutButton />}</HamburgerMenu>
       </div>
     </header>
   )
