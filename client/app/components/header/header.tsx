@@ -19,7 +19,7 @@ export default function Header() {
   const [roomName, setRoomName] = useAtom(roomNameAtom)
   const [apiUrl, setApiUrl] = useAtom(apiAtom)
   return (
-    <header className="min-h-10 flex flex-col md:flex-row justify-between items-center relative">
+    <header className="min-h-10 flex flex-col md:flex-row justify-between items-center relative md:pr-12 gap-2">
       <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
         rel="stylesheet"
@@ -36,22 +36,28 @@ export default function Header() {
           <h2
             className={`${roboto.className} md:absolute md:left-0 text-4xl drop-shadow-textShadow text-foreground`}
           >
-            QuickDrop ({apiUrl === API_URL_2 ? 'big files' : 'small files'})
+            QuickDrop
           </h2>
           <h1
             className={`${roboto.className}
       text-5xl drop-shadow-textShadow
       text-foreground flex justify-center
-      break-all w-full
+      break-all w-full grow
 
       `}
           >
             {roomName}
           </h1>
+          <h4
+            className="text-2xl drop-shadow-textShadow
+      text-foreground shrink-0 md:absolute right-20 md:top-1/2 md:translate-y-[-50%]"
+          >
+            ({apiUrl === API_URL_2 ? 'big files' : 'small files'})
+          </h4>
         </>
       )}
 
-      <div className="size-10 absolute right-0  top-1/2 transform -translate-y-1/2">
+      <div className="size-10 absolute right-0 top-0  ">
         <HamburgerMenu>{pathname === '/' && <LogoutButton />}</HamburgerMenu>
       </div>
     </header>

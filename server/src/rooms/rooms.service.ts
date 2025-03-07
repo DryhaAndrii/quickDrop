@@ -115,7 +115,7 @@ export class RoomsService {
     }
   }
 
-  async saveFile(roomName: string, file: Express.Multer.File) {
+  async saveFiles(roomName: string, files: Express.Multer.File | Express.Multer.File[]) {
     const roomDir = join('uploads', `room_${roomName}`)
     const filesDir = join(roomDir, 'files')
 
@@ -126,14 +126,30 @@ export class RoomsService {
       mkdirSync(filesDir)
     }
 
-    const filePath = join(filesDir, file.originalname)
-
-    try {
-      await writeFile(filePath, file.buffer)
-      return filePath
-    } catch (error) {
-      throw new Error(`Error while saving the file: ${error}`)
+    if (!Array.isArray(files)) {
+      const filePath = join(filesDir, files.originalname)
+      try {
+        await writeFile(filePath, files.buffer)
+        return [filePath]
+      } catch (error) {
+        throw new Error(`Error while saving the file: ${error}`)
+      }
     }
+
+    // If it's more than one file
+    const savedFilePaths = await Promise.all(
+      files.map(async (file) => {
+        const filePath = join(filesDir, file.originalname)
+        try {
+          await writeFile(filePath, file.buffer)
+          return filePath
+        } catch (error) {
+          throw new Error(`Error while saving the file: ${error}`)
+        }
+      }),
+    )
+
+    return savedFilePaths
   }
 
   @Interval(180000) //half hour

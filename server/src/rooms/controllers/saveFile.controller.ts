@@ -4,13 +4,13 @@ import {
   Post,
   Req,
   Res,
-  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common'
 import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
 import { RoomsService } from '../rooms.service'
-import { FileInterceptor } from '@nestjs/platform-express'
+import { FilesInterceptor } from '@nestjs/platform-express' // Используем FilesInterceptor для нескольких файлов
 import { diskStorage } from 'multer'
 import { extname } from 'path'
 
@@ -21,15 +21,15 @@ interface RequestWithCookies extends Request {
 const MAX_FILE_SIZE = 100 * 1024 * 1024 // 100 MB in bytes
 
 @Controller('rooms')
-export class SaveFileController {
+export class SavesFileController {
   constructor(
     private readonly jwtService: JwtService,
     private readonly roomsService: RoomsService,
   ) {}
 
-  @Post('saveFile')
+  @Post('saveFiles')
   @UseInterceptors(
-    FileInterceptor('file', {
+    FilesInterceptor('files', 10, {
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, callback) => {
@@ -37,7 +37,6 @@ export class SaveFileController {
           callback(null, file.fieldname + '-' + uniqueSuffix)
         },
       }),
-
       limits: {
         fileSize: MAX_FILE_SIZE,
       },
@@ -46,20 +45,29 @@ export class SaveFileController {
   async saveFile(
     @Req() req: RequestWithCookies,
     @Res() res: Response,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: Express.Multer.File[], // Массив файлов
   ) {
     const token = req.cookies['room_token']
     if (!token) throw new UnauthorizedException('No auth token')
     try {
       const tokenInfo = this.jwtService.verify<{ nickname: string; roomName: string }>(token)
-      if (!file) {
-        return res.status(400).json({ message: 'No file uploaded' })
+      if (!files || files.length === 0) {
+        return res.status(400).json({ message: 'No files uploaded' })
       }
 
       const roomName = tokenInfo.roomName
-      const savedFilePath = await this.roomsService.saveFile(roomName, file)
 
-      return res.json({ message: 'File saved successfully!', filePath: savedFilePath })
+      // Загружаем каждый файл по отдельности с использованием Promise.all
+      const savedFilePaths = await Promise.all(
+        files.map(async (file) => {
+          return await this.roomsService.saveFiles(roomName, file) // Сохраняем каждый файл по очереди
+        }),
+      )
+
+      return res.json({
+        message: 'Files saved successfully!',
+        filePaths: savedFilePaths, // Возвращаем пути для всех загруженных файлов
+      })
     } catch (error) {
       const err = error as Error & { code?: string }
 
@@ -69,7 +77,7 @@ export class SaveFileController {
           .json({ message: `File is too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB.` })
       }
 
-      throw new Error(`Error during saving file: ${err.message}`)
+      throw new Error(`Error during saving files: ${err.message}`)
     }
   }
 }
