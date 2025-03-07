@@ -21,7 +21,6 @@ export class LogoutController {
 
     try {
       const user = this.jwtService.verify<{ nickname: string; roomName: string }>(token)
-      console.log('Logging out user:', user)
 
       await this.roomsService.removeUserFromRoom(user.roomName, user.nickname)
 

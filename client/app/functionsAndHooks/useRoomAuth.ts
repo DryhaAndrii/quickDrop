@@ -21,7 +21,6 @@ export function useRoomAuth() {
     isChecking.current = true
 
     const url = checkRoomAuthEndpoint
-    console.log('Checking token url:', url)
     const options = {
       method: 'GET',
       credentials: 'include',

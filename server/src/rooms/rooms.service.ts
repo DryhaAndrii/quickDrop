@@ -6,6 +6,9 @@ import { RoomDto } from './dto/room.dto'
 import { Interval } from '@nestjs/schedule'
 import { ConfigService } from '@nestjs/config'
 import { hash } from 'bcrypt'
+import { mkdirSync, existsSync } from 'fs'
+import { writeFile } from 'fs/promises'
+import { join } from 'path'
 
 @Injectable()
 export class RoomsService {
@@ -34,7 +37,6 @@ export class RoomsService {
   }
 
   async updateTokenIssuedAt(roomName: string, nickname: string) {
-    console.log('Updating tokenIssuedAt, roomName:', roomName, 'nickname:', nickname)
     const room = await this.roomsRepository.findOne({ where: { roomName } })
     if (!room) throw new UnauthorizedException('Room not found')
 
@@ -75,7 +77,7 @@ export class RoomsService {
       where: { roomName: roomDto.roomName },
     })
     if (existingRoom) {
-      throw new Error('Room with this ID already exists. Please choose another one.')
+      throw new Error('Room with this name already exists. Please choose another one.')
     }
 
     const saltRounds = 10
@@ -110,6 +112,27 @@ export class RoomsService {
       } else {
         await this.roomsRepository.remove(room)
       }
+    }
+  }
+
+  async saveFile(roomName: string, file: Express.Multer.File) {
+    const roomDir = join('uploads', `room_${roomName}`)
+    const filesDir = join(roomDir, 'files')
+
+    if (!existsSync(roomDir)) {
+      mkdirSync(roomDir)
+    }
+    if (!existsSync(filesDir)) {
+      mkdirSync(filesDir)
+    }
+
+    const filePath = join(filesDir, file.originalname)
+
+    try {
+      await writeFile(filePath, file.buffer)
+      return filePath
+    } catch (error) {
+      throw new Error(`Error while saving the file: ${error}`)
     }
   }
 

@@ -68,7 +68,7 @@ export default function AuthForm({ handleSubmit }: AuthFormProps) {
             maxLength={20}
           />
           <div
-            className="flex items-center w-full justify-between px-4 py-2 text-foreground"
+            className="flex items-center w-full justify-between px-4 py-2 text-foreground font-semibold"
             onClick={checkboxHandler}
           >
             <p>Use big files api</p>

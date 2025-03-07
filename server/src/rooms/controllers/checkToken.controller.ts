@@ -21,7 +21,6 @@ export class CheckTokenController {
 
     try {
       const user = this.jwtService.verify<{ nickname: string; roomName: string }>(token)
-      console.log('Checking token, user:', user)
       await this.roomsService.updateTokenIssuedAt(user.roomName, user.nickname)
 
       const newToken = this.jwtService.sign({
