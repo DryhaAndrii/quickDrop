@@ -6,6 +6,8 @@ import { useAtom } from 'jotai'
 import { roomNameAtom } from '@/store/roomName'
 import HamburgerMenu from '../hamburgerMenu/hamburgerMenu'
 import LogoutButton from '../logoutButton/logoutButton'
+import { apiAtom } from '@/store/apiUrl'
+import { API_URL_2 } from '@/environments'
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -15,7 +17,7 @@ const roboto = Roboto({
 export default function Header() {
   const pathname = usePathname()
   const [roomName, setRoomName] = useAtom(roomNameAtom)
-
+  const [apiUrl, setApiUrl] = useAtom(apiAtom)
   return (
     <header className="min-h-10 flex flex-col md:flex-row justify-between items-center relative">
       <link
@@ -34,7 +36,7 @@ export default function Header() {
           <h2
             className={`${roboto.className} md:absolute md:left-0 text-4xl drop-shadow-textShadow text-foreground`}
           >
-            QuickDrop
+            QuickDrop ({apiUrl === API_URL_2 ? 'big files' : 'small files'})
           </h2>
           <h1
             className={`${roboto.className}

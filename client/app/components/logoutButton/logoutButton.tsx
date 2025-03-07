@@ -1,12 +1,13 @@
 'use client'
 import { fetchData } from '@/app/functionsAndHooks/fetch'
 import Button from '../button/button'
-import { logoutEndpoint } from '@/endpointsAndPaths'
+import { useEndpoints } from '@/endpointsAndPaths'
 import { useRouter } from 'next/navigation'
 import Loading, { useLoading } from '../loading/loading'
 
 export default function LogoutButton() {
   const { hideLoading, showLoading, isShow } = useLoading()
+  const { logoutEndpoint } = useEndpoints()
   const router = useRouter()
 
   async function logout() {

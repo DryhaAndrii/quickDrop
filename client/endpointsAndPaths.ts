@@ -1,8 +1,18 @@
-import { API_URL } from './environments'
+import { useAtomValue } from 'jotai'
+import { apiAtom } from './store/apiUrl'
 
-export const joinRoomEndpoint = `${API_URL}/rooms/join`
-export const createRoomEndpoint = `${API_URL}/rooms/create`
-export const checkRoomAuthEndpoint = `${API_URL}/rooms/checkToken`
-export const logoutEndpoint = `${API_URL}/rooms/logout`
+export function useEndpoints() {
+  const apiUrl = useAtomValue(apiAtom)
+  return {
+    joinRoomEndpoint: `${apiUrl}/rooms/join`,
+    createRoomEndpoint: `${apiUrl}/rooms/create`,
+    checkRoomAuthEndpoint: `${apiUrl}/rooms/checkToken`,
+    logoutEndpoint: `${apiUrl}/rooms/logout`,
+  }
+}
 
-export const authPath = '/auth'
+export function usePaths() {
+  return {
+    authPath: `/auth`,
+  }
+}

@@ -28,28 +28,28 @@ export default function HamburgerMenu({ children }: { children?: React.ReactNode
   return (
     <>
       {/* Button */}
-      <div className='size-full'>
-        <Button onClick={toggleMenu}><GoogleIcon iconName='menu'/></Button>
+      <div className="size-full">
+        <Button onClick={toggleMenu}>
+          <GoogleIcon iconName="menu" />
+        </Button>
       </div>
 
       {/* Portal Menu */}
       {createPortal(
         <div
-          className={`fixed top-0 right-0 w-[80%] md:w-96 h-full bg-background text-foreground
+          className={`fixed top-0 right-0 w-[80%] md:w-96 h-full bg-central-panel-gradient text-foreground shadow-centralPanelShadow
              transition-transform duration-300 ease-in-out p-5 z-[100]
              ${isOpen ? 'transform translate-x-0' : 'transform translate-x-full'}`}
         >
-          <div ref={menuRef} className="flex flex-col gap-5">
-            <div className="flex justify-between gap-5 h-10">
-              <Button onClick={toggleMenu}>
-                <GoogleIcon iconName="close" />
-              </Button>
-              <ThemeSwitcher />
-            </div>
+          <div ref={menuRef} className="flex flex-col gap-5 [&>*]:h-10 relative">
+            <Button onClick={toggleMenu}>
+              <GoogleIcon iconName="close" />
+            </Button>
+            <ThemeSwitcher />
             {children}
           </div>
         </div>,
-        document.body, // Портируем меню в body
+        document.body,
       )}
     </>
   )
