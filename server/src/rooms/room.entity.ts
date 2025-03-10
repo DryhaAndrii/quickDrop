@@ -15,4 +15,15 @@ export class Room {
 
   @Column('json', { default: () => "'[]'" })
   users: { nickname: string; tokenIssuedAt: Date }[]
+
+  @Column('json', { default: () => "'[]'" })
+  files: {
+    fileName: string
+    filePath: string
+    uploadedAt: Date
+    size: string
+  }[]
+
+  @Column({ nullable: true })
+  storagePath: string
 }

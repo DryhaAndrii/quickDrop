@@ -42,9 +42,11 @@ export default function HamburgerMenu({ children }: { children?: React.ReactNode
              ${isOpen ? 'transform translate-x-0' : 'transform translate-x-full'}`}
         >
           <div ref={menuRef} className="flex flex-col gap-5 [&>*]:h-10 relative">
+            {/* Button that close menu */}
             <Button onClick={toggleMenu}>
               <GoogleIcon iconName="close" />
             </Button>
+
             <ThemeSwitcher />
             {children}
           </div>

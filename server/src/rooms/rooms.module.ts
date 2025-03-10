@@ -9,6 +9,7 @@ import { CheckTokenController } from './controllers/checkToken.controller'
 import { ScheduleModule } from '@nestjs/schedule'
 import { ConfigService } from '@nestjs/config'
 import { LogoutController } from './controllers/logout.controller'
+import { SavesFileController } from './controllers/saveFile.controller'
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -22,6 +23,12 @@ import { LogoutController } from './controllers/logout.controller'
     ScheduleModule.forRoot(),
   ],
   providers: [RoomsService],
-  controllers: [CreateRoomController, JoinRoomController, CheckTokenController, LogoutController],
+  controllers: [
+    CreateRoomController,
+    JoinRoomController,
+    CheckTokenController,
+    LogoutController,
+    SavesFileController,
+  ],
 })
 export class RoomsModule {}

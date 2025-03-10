@@ -21,8 +21,16 @@ export class LogoutController {
 
     try {
       const user = this.jwtService.verify<{ nickname: string; roomName: string }>(token)
+      const room = await this.roomsService.findByRoomName(user.roomName)
 
       await this.roomsService.removeUserFromRoom(user.roomName, user.nickname)
+
+      if (room && room.users.length === 1) {
+        const updatedRoom = await this.roomsService.findByRoomName(user.roomName)
+        if (!updatedRoom) {
+          console.log(`Room ${user.roomName} was deleted during logout`)
+        }
+      }
 
       res.clearCookie('room_token', {
         httpOnly: true,
@@ -32,7 +40,8 @@ export class LogoutController {
       })
 
       return res.json({ message: 'User logged out successfully!' })
-    } catch {
+    } catch (error) {
+      console.error('Logout error:', error)
       throw new UnauthorizedException('Invalid token')
     }
   }

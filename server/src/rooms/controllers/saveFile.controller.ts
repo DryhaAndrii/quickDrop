@@ -10,9 +10,11 @@ import {
 import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
 import { RoomsService } from '../rooms.service'
-import { FilesInterceptor } from '@nestjs/platform-express' // Используем FilesInterceptor для нескольких файлов
+import { FilesInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
+import { randomUUID } from 'crypto'
+import { unlink } from 'fs/promises'
 
 interface RequestWithCookies extends Request {
   cookies: { [key: string]: string }
@@ -31,9 +33,9 @@ export class SavesFileController {
   @UseInterceptors(
     FilesInterceptor('files', 10, {
       storage: diskStorage({
-        destination: './uploads',
+        destination: './uploads/tmp',
         filename: (req, file, callback) => {
-          const uniqueSuffix = Date.now() + extname(file.originalname)
+          const uniqueSuffix = `${randomUUID()}${extname(file.originalname)}`
           callback(null, file.fieldname + '-' + uniqueSuffix)
         },
       }),
@@ -45,7 +47,7 @@ export class SavesFileController {
   async saveFile(
     @Req() req: RequestWithCookies,
     @Res() res: Response,
-    @UploadedFiles() files: Express.Multer.File[], // Массив файлов
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
     const token = req.cookies['room_token']
     if (!token) throw new UnauthorizedException('No auth token')
@@ -54,19 +56,14 @@ export class SavesFileController {
       if (!files || files.length === 0) {
         return res.status(400).json({ message: 'No files uploaded' })
       }
-
       const roomName = tokenInfo.roomName
 
-      // Загружаем каждый файл по отдельности с использованием Promise.all
-      const savedFilePaths = await Promise.all(
-        files.map(async (file) => {
-          return await this.roomsService.saveFiles(roomName, file) // Сохраняем каждый файл по очереди
-        }),
-      )
-
+      const savedFilePaths = await this.roomsService.saveFiles(roomName, files)
+      // Удаление временных файлов после обработки
+      await Promise.all(files.map((file) => unlink(file.path)))
       return res.json({
         message: 'Files saved successfully!',
-        filePaths: savedFilePaths, // Возвращаем пути для всех загруженных файлов
+        filePaths: savedFilePaths,
       })
     } catch (error) {
       const err = error as Error & { code?: string }
@@ -77,7 +74,7 @@ export class SavesFileController {
           .json({ message: `File is too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB.` })
       }
 
-      throw new Error(`Error during saving files: ${err.message}`)
+      throw new Error(`Error during saving files: ${error}`)
     }
   }
 }

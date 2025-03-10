@@ -8,6 +8,7 @@ export function useEndpoints() {
     createRoomEndpoint: `${apiUrl}/rooms/create`,
     checkRoomAuthEndpoint: `${apiUrl}/rooms/checkToken`,
     logoutEndpoint: `${apiUrl}/rooms/logout`,
+    saveFileEndpoint: `${apiUrl}/rooms/saveFiles`,
   }
 }
 
