@@ -1,7 +1,11 @@
 import { useAtomValue } from 'jotai'
 import { apiAtom } from './store/apiUrl'
 
-export function useEndpoints() {
+interface useEndpointsProps {
+  roomName?: string
+}
+
+export function useEndpoints({ roomName = '' }: useEndpointsProps = {}) {
   const apiUrl = useAtomValue(apiAtom)
   return {
     joinRoomEndpoint: `${apiUrl}/rooms/join`,
@@ -9,6 +13,8 @@ export function useEndpoints() {
     checkRoomAuthEndpoint: `${apiUrl}/rooms/checkToken`,
     logoutEndpoint: `${apiUrl}/rooms/logout`,
     saveFileEndpoint: `${apiUrl}/rooms/saveFiles`,
+    getRoomFilesEndpoint: `${apiUrl}/rooms/${roomName}/files`,
+    downloadFileEndpoint: `${apiUrl}/rooms/${roomName}/download/`,
   }
 }
 

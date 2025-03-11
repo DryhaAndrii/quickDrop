@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Room } from './room.entity'
@@ -153,6 +153,12 @@ export class RoomsService {
   }
 
   async saveFiles(roomName: string, files: Express.Multer.File[]) {
+    const room = await this.roomsRepository.findOne({ where: { roomName } })
+
+    if (!room) {
+      throw new Error(`Room not found: ${roomName}`)
+    }
+
     const roomDir = join('uploads', `room_${roomName}`)
     const filesDir = join(roomDir, 'files')
 
@@ -175,11 +181,24 @@ export class RoomsService {
           originalName: file.originalname,
           storedName: uniqueFileName,
           path: finalPath,
+          uploadedAt: new Date(),
+          size: `${file.size}`,
         }
       }),
     )
 
+    room.files = [...room.files, ...savedFilePaths]
+
+    await this.roomsRepository.save(room)
+
     return savedFilePaths
+  }
+
+  async getFilesForRoom(roomName: string) {
+    const room = await this.roomsRepository.findOne({ where: { roomName } })
+    if (!room) throw new NotFoundException(`Room "${roomName}" not found`)
+
+    return room.files
   }
 
   @Interval(180000) //half hour

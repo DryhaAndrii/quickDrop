@@ -18,8 +18,9 @@ export class Room {
 
   @Column('json', { default: () => "'[]'" })
   files: {
-    fileName: string
-    filePath: string
+    originalName: string
+    storedName: string
+    path: string
     uploadedAt: Date
     size: string
   }[]

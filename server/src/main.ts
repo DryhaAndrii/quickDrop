@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  const clientUrls = [process.env.CLIENT]
+  const clientUrls = [process.env.CLIENT, process.env.CLIENT2]
   console.log('clientUrls', clientUrls)
   app.enableCors({
     origin: clientUrls,

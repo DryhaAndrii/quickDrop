@@ -1,10 +1,10 @@
 import React from 'react'
 
-interface FileListProps {
+interface SelectedFilesProps {
   files: File[]
 }
 
-const FileList: React.FC<FileListProps> = ({ files }) => {
+const SelectedFiles: React.FC<SelectedFilesProps> = ({ files }) => {
   return (
     <div className="mt-4">
       <h4 className="text-md font-semibold text-foreground">Selected Files</h4>
@@ -19,4 +19,4 @@ const FileList: React.FC<FileListProps> = ({ files }) => {
   )
 }
 
-export default FileList
+export default SelectedFiles

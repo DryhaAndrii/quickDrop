@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Button from '../button/button'
 import DragAndDrop from './dragAndDrop'
-import FileList from './fileList'
 import { useAtom } from 'jotai'
 import { apiAtom } from '@/store/apiUrl'
 import { API_URL } from '@/environments'
@@ -9,6 +8,8 @@ import toast from 'react-hot-toast'
 import { fetchData } from '@/app/functionsAndHooks/fetch'
 import { useEndpoints } from '@/endpointsAndPaths'
 import Loading, { useLoading } from '@/app/components/loading/loading'
+import SelectedFiles from './selectedFiles'
+import FilesList from './filesList'
 
 const ONE_MB = 1000000
 
@@ -17,6 +18,7 @@ export default function FileBoard() {
   const [apiUrl, setApiUrl] = useAtom(apiAtom)
   const { saveFileEndpoint } = useEndpoints()
   const { hideLoading, showLoading, isShow } = useLoading()
+  const filesListRef = useRef<{ refreshFiles: () => void } | null>(null)
   const handleFilesChange = (newFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...newFiles])
   }
@@ -38,8 +40,9 @@ export default function FileBoard() {
     const response = await fetchData<any>(saveFileEndpoint, showLoading, hideLoading, options)
     if (response) {
       toast.success(response.message)
-      console.log('Resopne:', response)
-      clearFiles();
+      clearFiles()
+
+      filesListRef.current?.refreshFiles()
     }
   }
 
@@ -50,13 +53,15 @@ export default function FileBoard() {
   return (
     <div className="shadow-insetShadow rounded-lg p-4 flex flex-col gap-4">
       <Loading isShow={isShow} />
-      <h3 className="text-lg font-bold text-foreground">File Board</h3>
+      <h3 className="text-lg font-bold text-foreground text-center">File Board</h3>
+
+      <FilesList ref={filesListRef} />
 
       {/* Drag and drop component */}
       <DragAndDrop onFilesChange={handleFilesChange} />
 
       {/* List of selected files */}
-      {files.length > 0 && <FileList files={files} />}
+      {files.length > 0 && <SelectedFiles files={files} />}
 
       {/* Buttons */}
       {files.length > 0 && (
@@ -69,6 +74,7 @@ export default function FileBoard() {
           </div>
         </div>
       )}
+
     </div>
   )
 }

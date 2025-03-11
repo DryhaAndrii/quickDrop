@@ -10,6 +10,8 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { ConfigService } from '@nestjs/config'
 import { LogoutController } from './controllers/logout.controller'
 import { SavesFileController } from './controllers/saveFile.controller'
+import { GetRoomFilesController } from './controllers/getRoomFiles.controller'
+import { DownloadFileController } from './controllers/downloadFile.controller'
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -29,6 +31,8 @@ import { SavesFileController } from './controllers/saveFile.controller'
     CheckTokenController,
     LogoutController,
     SavesFileController,
+    GetRoomFilesController,
+    DownloadFileController,
   ],
 })
 export class RoomsModule {}

@@ -40,11 +40,9 @@ export default function Header() {
           </h2>
           <h1
             className={`${roboto.className}
-      text-5xl drop-shadow-textShadow
-      text-foreground flex justify-center
-      break-all w-full grow
-
-      `}
+                text-5xl drop-shadow-textShadow text-foreground flex justify-center break-all w-full grow
+                md:absolute md:top-1/2 md:left-1/2 md:w-[60%] md:translate-x-[-50%] md:translate-y-[-50%]
+                `}
           >
             {roomName}
           </h1>
