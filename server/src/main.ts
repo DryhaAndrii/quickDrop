@@ -2,6 +2,7 @@ import * as cookieParser from 'cookie-parser'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { ValidationPipe } from '@nestjs/common'
+import * as bodyParser from 'body-parser'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -15,6 +16,9 @@ async function bootstrap() {
   })
 
   app.useGlobalPipes(new ValidationPipe())
+
+  app.use(bodyParser.json({ limit: '1000mb' }))
+  app.use(bodyParser.urlencoded({ limit: '1000mb', extended: true }))
 
   app.use(cookieParser())
 

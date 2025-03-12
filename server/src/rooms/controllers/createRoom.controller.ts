@@ -3,11 +3,7 @@ import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
 import { RoomsService } from '@/src/rooms/rooms.service'
 import { RoomDto } from '@/src/rooms/dto/room.dto'
-
-interface bodyType {
-  room: RoomDto
-  nickname: string
-}
+import { BadRequestException } from '@nestjs/common'
 
 @Controller('rooms')
 export class CreateRoomController {
@@ -17,9 +13,16 @@ export class CreateRoomController {
   ) {}
 
   @Post('create')
-  async createRoom(@Body() body: bodyType, @Res() res: Response) {
+  async createRoom(
+    @Body('room') room: RoomDto,
+    @Body('nickname') nickname: string,
+    @Res() res: Response,
+  ) {
     try {
-      const { nickname, room } = body
+      if (!nickname || nickname.trim().length === 0) {
+        throw new BadRequestException('Nickname is required')
+      }
+
       const { room: newRoom } = await this.roomsService.createRoom(room, nickname)
       const token = this.jwtService.sign({
         nickname: nickname,

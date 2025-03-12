@@ -11,7 +11,7 @@ import Loading, { useLoading } from '@/app/components/loading/loading'
 import SelectedFiles from './selectedFiles'
 import FilesList from './filesList'
 
-const ONE_MB = 1000000
+const MAX_SIZE = 5 * 1024 * 1024 // 5 MB in bytes
 
 export default function FileBoard() {
   const [files, setFiles] = useState<File[]>([])
@@ -30,12 +30,13 @@ export default function FileBoard() {
 
     const filesSize = files.reduce((acc, file) => acc + file.size, 0)
 
-    const smallApi = apiUrl === API_URL;
-    if (smallApi && filesSize > ONE_MB) {
-      //if files size is more than 1mb and user use small api
-      toast.error('You cant upload more than 1mb in room that use api for small files')
+    const smallApi = apiUrl === API_URL
+    if (smallApi && filesSize > MAX_SIZE) {
+      //if files size is more than 5mb and user use small api
+      toast.error('You cant upload more than 5mb in room that use api for small files')
       return
     }
+    formData.append('smallApi', smallApi.toString())
     const options = {
       method: 'POST',
       credentials: 'include',
@@ -79,7 +80,6 @@ export default function FileBoard() {
           </div>
         </div>
       )}
-
     </div>
   )
 }

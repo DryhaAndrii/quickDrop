@@ -67,6 +67,10 @@ select {
   outline: none;
 }
 
+.custom-scroll:has(> *:last-child) {
+  padding-right: 6px;
+}
+
 .custom-scroll{
   scrollbar-gutter: stable;
 }

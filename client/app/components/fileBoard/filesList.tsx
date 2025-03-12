@@ -61,7 +61,7 @@ const FilesList = forwardRef((_, ref) => {
       <Loading isShow={isShow} />
       <h4 className="text-foreground">Files</h4>
       {files.length === 0 && <p>No files in this room yet :P</p>}
-      <div className="flex flex-col gap-2 text-foreground h-96 overflow-auto custom-scroll pr-3">
+      <div className="flex flex-col gap-2 text-foreground max-h-96 overflow-auto custom-scroll">
         {files.map((file, index) => (
           <div
             className={`h-16 p-1 px-4 rounded-lg border border-foreground flex items-center gap-4`}
@@ -69,6 +69,9 @@ const FilesList = forwardRef((_, ref) => {
           >
             <p className="grow overflow-hidden h-full flex items-center text-ellipsis whitespace-nowrap">
               {file.originalName}
+            </p>
+            <p className="shrink-0 overflow-hidden h-full flex items-center text-ellipsis whitespace-nowrap">
+              {(+file.size/1024/1024).toFixed(2)} mb
             </p>
             <div className="size-10 shrink-0">
               <Button onClick={() => downloadFile(file)}>
