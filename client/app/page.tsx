@@ -1,14 +1,30 @@
 'use client'
+import { useAtom } from 'jotai'
 import CentralPanel from './components/centralPanel/centralPanel'
 import FileBoard from './components/fileBoard/fileBoard'
 import HamburgerMenu from './components/hamburgerMenu/hamburgerMenu'
 import Header from './components/header/header'
 import Loading, { useLoading } from './components/loading/loading'
+import { roomNameAtom } from '@/store/roomName'
 
 export default function Home() {
   const { hideLoading, showLoading, isShow } = useLoading()
+  const [roomName, _] = useAtom(roomNameAtom)
+
+  if (roomName === '') {
+    return (
+      <div className="w-screen flex justify-center items-center h-screen">
+        <Loading isShow={true} />
+        <div className="w-[95%] h-[95%]">
+          <CentralPanel>
+            <></>
+          </CentralPanel>
+        </div>
+      </div>
+    )
+  }
   return (
-    <div className="w-screen flex justify-center items-center h-screen">
+    <div className="w-screen flex justify-center items-center h-full py-4">
       <Loading isShow={isShow} />
       <div className="w-[95%] h-[95%]">
         <CentralPanel>

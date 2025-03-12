@@ -25,10 +25,14 @@ export default function FileBoard() {
 
   async function handleUpload() {
     const formData = new FormData()
+
     files.forEach((file) => formData.append('files', file))
+
     const filesSize = files.reduce((acc, file) => acc + file.size, 0)
-    if (apiUrl === API_URL && filesSize > ONE_MB) {
-      //if files size is more than 1mb
+
+    const smallApi = apiUrl === API_URL;
+    if (smallApi && filesSize > ONE_MB) {
+      //if files size is more than 1mb and user use small api
       toast.error('You cant upload more than 1mb in room that use api for small files')
       return
     }
@@ -37,6 +41,7 @@ export default function FileBoard() {
       credentials: 'include',
       body: formData,
     }
+
     const response = await fetchData<any>(saveFileEndpoint, showLoading, hideLoading, options)
     if (response) {
       toast.success(response.message)
@@ -46,7 +51,7 @@ export default function FileBoard() {
     }
   }
 
-  const clearFiles = () => {
+  function clearFiles() {
     setFiles([])
   }
 
