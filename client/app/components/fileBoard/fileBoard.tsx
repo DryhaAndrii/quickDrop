@@ -32,7 +32,7 @@ export default function FileBoard() {
     const filesSize = files.reduce((acc, file) => acc + file.size, 0)
 
     const smallApi = apiUrl === API_URL
-    if(!smallApi&&filesSize>MAX_SIZE_BIG_API){
+    if (!smallApi && filesSize > MAX_SIZE_BIG_API) {
       toast.error('Max size of file is 500mb')
       return
     }
@@ -43,7 +43,7 @@ export default function FileBoard() {
     formData.append('smallApi', smallApi.toString())
 
     const xhr = new XMLHttpRequest()
-    showLoading();
+    showLoading()
 
     // Progress
     xhr.upload.addEventListener('progress', (event) => {
@@ -56,13 +56,34 @@ export default function FileBoard() {
     // Handling end of loading
     xhr.addEventListener('load', () => {
       if (xhr.status >= 200 && xhr.status < 300) {
-        const response = JSON.parse(xhr.responseText)
-        toast.success(response.message)
-        clearFiles()
-        filesListRef.current?.refreshFiles()
+        try {
+          const response = JSON.parse(xhr.responseText)
+
+          if (response.message) {
+            toast.success(response.message)
+          } else {
+            toast.success('Files uploaded successfully!')
+          }
+
+          clearFiles()
+          filesListRef.current?.refreshFiles()
+        } catch (error) {
+          console.error('Failed to parse server response:', error)
+          toast.error('Failed to process server response')
+        }
       } else {
-        toast.error('Upload failed')
-        hideLoading()
+        try {
+          const errorResponse = JSON.parse(xhr.responseText)
+
+          if (errorResponse.message) {
+            toast.error(errorResponse.message)
+          } else {
+            toast.error('Upload failed')
+          }
+        } catch (error) {
+          console.error('Failed to parse server error response:', error)
+          toast.error('Upload failed')
+        }
       }
       setUploadProgress(0)
       hideLoading()
@@ -87,7 +108,7 @@ export default function FileBoard() {
 
   return (
     <div className="shadow-insetShadow rounded-lg p-4 flex flex-col gap-4">
-      <Loading isShow={isShow} text={`Loading file: ${Math.round(uploadProgress)}%`}/>
+      <Loading isShow={isShow} text={`Loading file: ${Math.round(uploadProgress)}%`} />
       <h3 className="text-lg font-bold text-foreground text-center">File Board</h3>
 
       <FilesList ref={filesListRef} />
