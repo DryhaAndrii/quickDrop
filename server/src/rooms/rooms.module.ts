@@ -12,7 +12,7 @@ import { LogoutController } from './controllers/logout.controller'
 import { SavesFileController } from './controllers/saveFile.controller'
 import { GetRoomFilesController } from './controllers/getRoomFiles.controller'
 import { DownloadFileController } from './controllers/downloadFile.controller'
-import { RemovingExpiredUsersAndRoomsService } from './services/removingExpiredUsersAndRooms.service'
+import { CleanupService } from './services/cleanup.service'
 import { FilesService } from './services/files.service'
 import { UserService } from './services/user.service'
 import { TokenService } from './services/token.service'
@@ -28,13 +28,7 @@ import { TokenService } from './services/token.service'
     TypeOrmModule.forFeature([Room]),
     ScheduleModule.forRoot(),
   ],
-  providers: [
-    RoomsService,
-    RemovingExpiredUsersAndRoomsService,
-    FilesService,
-    UserService,
-    TokenService,
-  ],
+  providers: [RoomsService, CleanupService, FilesService, UserService, TokenService],
   controllers: [
     CreateRoomController,
     JoinRoomController,

@@ -10,6 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "createDB": "ts-node src/create-db.ts",
+    "tunnel": "ngrok http --domain=whole-proven-mullet.ngrok-free.app 3002",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
     "start:prod": "cross-env NODE_ENV=production node dist/main",
     "start:debug": "nest start --debug --watch",

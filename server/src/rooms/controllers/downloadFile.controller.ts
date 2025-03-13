@@ -26,7 +26,6 @@ export class DownloadFileController {
     }
 
     const filePath = join(process.cwd(), 'uploads', `room_${roomName}`, 'files', fileName)
-    console.log('Path:', filePath)
 
     try {
       await fs.access(filePath)

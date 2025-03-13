@@ -11,11 +11,13 @@ import Loading, { useLoading } from '@/app/components/loading/loading'
 import SelectedFiles from './selectedFiles'
 import FilesList from './filesList'
 
-const MAX_SIZE = 5 * 1024 * 1024 // 5 MB in bytes
+const MAX_SIZE_SMALL_API = 5 * 1024 * 1024 // 5 MB in bytes
+const MAX_SIZE_BIG_API = 500 * 1024 * 1024 // 500 MB in bytes
 
 export default function FileBoard() {
   const [files, setFiles] = useState<File[]>([])
   const [apiUrl, setApiUrl] = useAtom(apiAtom)
+  const [uploadProgress, setUploadProgress] = useState(0)
   const { saveFileEndpoint } = useEndpoints()
   const { hideLoading, showLoading, isShow } = useLoading()
   const filesListRef = useRef<{ refreshFiles: () => void } | null>(null)
@@ -25,31 +27,58 @@ export default function FileBoard() {
 
   async function handleUpload() {
     const formData = new FormData()
-
     files.forEach((file) => formData.append('files', file))
 
     const filesSize = files.reduce((acc, file) => acc + file.size, 0)
 
     const smallApi = apiUrl === API_URL
-    if (smallApi && filesSize > MAX_SIZE) {
-      //if files size is more than 5mb and user use small api
+    if(!smallApi&&filesSize>MAX_SIZE_BIG_API){
+      toast.error('Max size of file is 500mb')
+      return
+    }
+    if (smallApi && filesSize > MAX_SIZE_SMALL_API) {
       toast.error('You cant upload more than 5mb in room that use api for small files')
       return
     }
     formData.append('smallApi', smallApi.toString())
-    const options = {
-      method: 'POST',
-      credentials: 'include',
-      body: formData,
-    }
 
-    const response = await fetchData<any>(saveFileEndpoint, showLoading, hideLoading, options)
-    if (response) {
-      toast.success(response.message)
-      clearFiles()
+    const xhr = new XMLHttpRequest()
+    showLoading();
 
-      filesListRef.current?.refreshFiles()
-    }
+    // Progress
+    xhr.upload.addEventListener('progress', (event) => {
+      if (event.lengthComputable) {
+        const percentComplete = (event.loaded / event.total) * 100
+        setUploadProgress(percentComplete)
+      }
+    })
+
+    // Handling end of loading
+    xhr.addEventListener('load', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const response = JSON.parse(xhr.responseText)
+        toast.success(response.message)
+        clearFiles()
+        filesListRef.current?.refreshFiles()
+      } else {
+        toast.error('Upload failed')
+        hideLoading()
+      }
+      setUploadProgress(0)
+      hideLoading()
+    })
+
+    // Error handling
+    xhr.addEventListener('error', () => {
+      toast.error('Upload failed')
+      setUploadProgress(0)
+      hideLoading()
+    })
+
+    // Sending request
+    xhr.open('POST', saveFileEndpoint, true)
+    xhr.withCredentials = true
+    xhr.send(formData)
   }
 
   function clearFiles() {
@@ -58,7 +87,7 @@ export default function FileBoard() {
 
   return (
     <div className="shadow-insetShadow rounded-lg p-4 flex flex-col gap-4">
-      <Loading isShow={isShow} />
+      <Loading isShow={isShow} text={`Loading file: ${Math.round(uploadProgress)}%`}/>
       <h3 className="text-lg font-bold text-foreground text-center">File Board</h3>
 
       <FilesList ref={filesListRef} />

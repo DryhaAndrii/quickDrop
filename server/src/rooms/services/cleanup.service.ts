@@ -4,18 +4,21 @@ import { Repository } from 'typeorm'
 import { Room } from '../room.entity'
 import { Interval } from '@nestjs/schedule'
 import { ConfigService } from '@nestjs/config'
-import { rm } from 'fs/promises'
+import { rm, readdir, stat } from 'fs/promises'
 import { join } from 'path'
 
+const MAX_FILE_AGE = 60 * 10 * 1000 //10 minute
+const INTERVAL = 60 * 30 * 1000 //30 minute
+
 @Injectable()
-export class RemovingExpiredUsersAndRoomsService {
+export class CleanupService {
   constructor(
     @InjectRepository(Room)
     private roomsRepository: Repository<Room>,
     private configService: ConfigService,
   ) {}
 
-  async removeExpiredUsers() {
+  async removeExpiredUsersAndRooms() {
     const rooms = await this.roomsRepository.find()
     const currentTime = new Date().getTime()
 
@@ -55,9 +58,33 @@ export class RemovingExpiredUsersAndRoomsService {
     }
   }
 
-  @Interval(60000) //half hour
+  async cleanTmpDirectory() {
+    const tmpDir = join('uploads', 'tmp')
+    const currentTime = Date.now()
+
+    try {
+      const files = await readdir(tmpDir)
+
+      for (const file of files) {
+        const filePath = join(tmpDir, file)
+        const fileStats = await stat(filePath)
+
+        if (currentTime - fileStats.mtimeMs > MAX_FILE_AGE) {
+          await rm(filePath, { force: true })
+          console.log(`Deleted temporary file: ${filePath}`)
+        }
+      }
+    } catch (error) {
+      console.error('Error cleaning tmp directory:', error)
+    }
+  }
+
+  @Interval(INTERVAL)
   async handleCron() {
-    console.log('Cleaning up expired users...')
-    await this.removeExpiredUsers()
+    console.log('Cleaning up expired users and rooms...')
+    await this.removeExpiredUsersAndRooms()
+
+    console.log('Cleaning up temporary files...')
+    await this.cleanTmpDirectory()
   }
 }
