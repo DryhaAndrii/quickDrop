@@ -1,7 +1,8 @@
 import { Controller, UnauthorizedException, Get, Req, Res } from '@nestjs/common'
 import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
-import { RoomsService } from '../rooms.service'
+import { RoomsService } from '../services/rooms.service'
+import { UserService } from '../services/user.service'
 
 interface RequestWithCookies extends Request {
   cookies: { [key: string]: string }
@@ -12,6 +13,7 @@ export class LogoutController {
   constructor(
     private readonly jwtService: JwtService,
     private readonly roomsService: RoomsService,
+    private readonly userService: UserService,
   ) {}
 
   @Get('logout')
@@ -23,7 +25,7 @@ export class LogoutController {
       const user = this.jwtService.verify<{ nickname: string; roomName: string }>(token)
       const room = await this.roomsService.findByRoomName(user.roomName)
 
-      await this.roomsService.removeUserFromRoom(user.roomName, user.nickname)
+      await this.userService.removeUserFromRoom(user.roomName, user.nickname)
 
       if (room && room.users.length === 1) {
         const updatedRoom = await this.roomsService.findByRoomName(user.roomName)

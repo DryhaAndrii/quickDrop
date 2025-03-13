@@ -1,12 +1,12 @@
 import { Controller, Get, Param, Res, NotFoundException } from '@nestjs/common'
 import { Response } from 'express'
-import { RoomsService } from '../rooms.service'
 import { join } from 'path'
 import { promises as fs } from 'fs'
+import { FilesService } from '../services/files.service'
 
 @Controller('rooms')
 export class DownloadFileController {
-  constructor(private readonly roomsService: RoomsService) {}
+  constructor(private readonly filesService: FilesService) {}
 
   @Get(':roomName/download/:fileName')
   async downloadFile(
@@ -14,7 +14,7 @@ export class DownloadFileController {
     @Param('fileName') fileName: string,
     @Res() res: Response,
   ) {
-    const files = await this.roomsService.getFilesForRoom(roomName)
+    const files = await this.filesService.getFilesForRoom(roomName)
 
     if (!files || files.length === 0) {
       throw new NotFoundException('No files found in this room')

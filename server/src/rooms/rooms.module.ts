@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Room } from '@/src/rooms/room.entity'
-import { RoomsService } from './rooms.service'
+import { RoomsService } from './services/rooms.service'
 import { CreateRoomController } from './controllers/createRoom.controller'
 import { JoinRoomController } from './controllers/joinRoom.controller'
 import { CheckTokenController } from './controllers/checkToken.controller'
@@ -12,6 +12,10 @@ import { LogoutController } from './controllers/logout.controller'
 import { SavesFileController } from './controllers/saveFile.controller'
 import { GetRoomFilesController } from './controllers/getRoomFiles.controller'
 import { DownloadFileController } from './controllers/downloadFile.controller'
+import { RemovingExpiredUsersAndRoomsService } from './services/removingExpiredUsersAndRooms.service'
+import { FilesService } from './services/files.service'
+import { UserService } from './services/user.service'
+import { TokenService } from './services/token.service'
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -24,7 +28,13 @@ import { DownloadFileController } from './controllers/downloadFile.controller'
     TypeOrmModule.forFeature([Room]),
     ScheduleModule.forRoot(),
   ],
-  providers: [RoomsService],
+  providers: [
+    RoomsService,
+    RemovingExpiredUsersAndRoomsService,
+    FilesService,
+    UserService,
+    TokenService,
+  ],
   controllers: [
     CreateRoomController,
     JoinRoomController,

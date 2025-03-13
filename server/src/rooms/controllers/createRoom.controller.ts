@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Res } from '@nestjs/common'
 import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
-import { RoomsService } from '@/src/rooms/rooms.service'
+import { RoomsService } from '@/src/rooms/services/rooms.service'
 import { RoomDto } from '@/src/rooms/dto/room.dto'
 import { BadRequestException } from '@nestjs/common'
 

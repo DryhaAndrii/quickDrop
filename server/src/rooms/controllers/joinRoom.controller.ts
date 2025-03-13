@@ -1,9 +1,10 @@
 import { Body, Controller, Post, Res, NotFoundException } from '@nestjs/common'
 import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
-import { RoomsService } from '@/src/rooms/rooms.service'
+import { RoomsService } from '@/src/rooms/services/rooms.service'
 import { RoomDto } from '../dto/room.dto'
 import * as bcrypt from 'bcrypt'
+import { UserService } from '../services/user.service'
 
 interface bodyType {
   room: RoomDto
@@ -15,6 +16,7 @@ export class JoinRoomController {
   constructor(
     private readonly jwtService: JwtService,
     private readonly roomsService: RoomsService,
+    private readonly userService: UserService,
   ) {}
 
   @Post('join')
@@ -34,11 +36,11 @@ export class JoinRoomController {
         }
       }
 
-      const existingUser = await this.roomsService.findUserByNickname(existingRoom.id, nickname)
+      const existingUser = await this.userService.findUserByNickname(existingRoom.id, nickname)
 
       if (existingUser) throw new Error('User with this nickname already exists.')
 
-      await this.roomsService.addUserToRoom(existingRoom.id, nickname)
+      await this.userService.addUserToRoom(existingRoom.id, nickname)
 
       const token = this.jwtService.sign({
         nickname,

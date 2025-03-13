@@ -1,7 +1,7 @@
 import { Controller, UnauthorizedException, Get, Req, Res } from '@nestjs/common'
 import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
-import { RoomsService } from '../rooms.service'
+import { TokenService } from '../services/token.service'
 
 interface RequestWithCookies extends Request {
   cookies: { [key: string]: string }
@@ -11,7 +11,7 @@ interface RequestWithCookies extends Request {
 export class CheckTokenController {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly roomsService: RoomsService,
+    private readonly tokenService: TokenService,
   ) {}
 
   @Get('checkToken')
@@ -21,7 +21,7 @@ export class CheckTokenController {
 
     try {
       const user = this.jwtService.verify<{ nickname: string; roomName: string }>(token)
-      await this.roomsService.updateTokenIssuedAt(user.roomName, user.nickname)
+      await this.tokenService.updateTokenIssuedAt(user.roomName, user.nickname)
 
       const newToken = this.jwtService.sign({
         nickname: user.nickname,

@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common'
 import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
-import { RoomsService } from '../rooms.service'
+import { RoomsService } from '../services/rooms.service'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
@@ -18,6 +18,7 @@ import { randomUUID } from 'crypto'
 import { unlink, access, mkdir } from 'fs/promises'
 import { promises } from 'fs'
 import * as path from 'path'
+import { FilesService } from '../services/files.service'
 
 interface RequestWithCookies extends Request {
   cookies: { [key: string]: string }
@@ -39,6 +40,7 @@ export class SavesFileController {
   constructor(
     private readonly jwtService: JwtService,
     private readonly roomsService: RoomsService,
+    private readonly fileService: FilesService,
   ) {}
 
   async getFolderSize(folderPath: string): Promise<number> {
@@ -50,7 +52,7 @@ export class SavesFileController {
       const stats = await promises.stat(filePath)
 
       if (stats.isDirectory()) {
-        totalSize += await this.getFolderSize(filePath) // Рекурсивно проверяем размер вложенных папок
+        totalSize += await this.getFolderSize(filePath) // Recursively get size of subfolders
       } else {
         totalSize += stats.size
       }
@@ -94,22 +96,18 @@ export class SavesFileController {
       }
       const roomName = tokenInfo.roomName
 
-      // Путь к папке комнаты
       const folderPath = path.join(`./uploads/room_${roomName}`)
 
-      // Проверяем, существует ли папка
       let currentFolderSize = 0
       try {
-        // Проверяем размер папки только если она существует
-        await access(folderPath) // Проверяем, доступна ли папка
-        currentFolderSize = await this.getFolderSize(folderPath) // Получаем размер папки
+        await access(folderPath)
+        currentFolderSize = await this.getFolderSize(folderPath)
       } catch {
-        // Если папка не существует, она будет создана при первом файле
         await mkdir(folderPath, { recursive: true })
         console.log('Folder does not exist, creating it now.')
       }
 
-      // Если лимит превышен, не разрешаем загрузку
+      // If size of folder higher then limit return error
       if (
         (body.smallApi === 'true' && currentFolderSize >= SMALL_API_MAX_SIZE) ||
         (body.smallApi === 'false' && currentFolderSize >= BIG_API_MAX_SIZE)
@@ -119,7 +117,7 @@ export class SavesFileController {
         })
       }
 
-      const savedFilePaths = await this.roomsService.saveFiles(roomName, files)
+      const savedFilePaths = await this.fileService.saveFiles(roomName, files)
 
       // Deleting temporary files
       await Promise.all(files.map((file) => unlink(file.path)))
