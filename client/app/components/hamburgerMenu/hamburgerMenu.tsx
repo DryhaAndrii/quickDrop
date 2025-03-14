@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 import Button from '../button/button'
 import { ThemeSwitcher } from '../theme/theme'
 import GoogleIcon from '../googleIcon/googleIcon'
+import Link from 'next/link'
 
 export default function HamburgerMenu({ children }: { children?: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -46,6 +47,9 @@ export default function HamburgerMenu({ children }: { children?: React.ReactNode
             <Button onClick={toggleMenu}>
               <GoogleIcon iconName="close" />
             </Button>
+            <Link href={'https://whole-proven-mullet.ngrok-free.app'}>
+              <Button>Prove big api</Button>
+            </Link>
 
             <ThemeSwitcher />
             {children}
