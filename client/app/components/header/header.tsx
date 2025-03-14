@@ -7,7 +7,7 @@ import { roomNameAtom } from '@/store/roomName'
 import HamburgerMenu from '../hamburgerMenu/hamburgerMenu'
 import LogoutButton from '../logoutButton/logoutButton'
 import { apiAtom } from '@/store/apiUrl'
-import { API_URL_2 } from '@/environments'
+import { BIG_API_URL } from '@/environments'
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -50,7 +50,7 @@ export default function Header() {
             className="text-2xl drop-shadow-textShadow
       text-foreground shrink-0 md:absolute right-20 md:top-1/2 md:translate-y-[-50%]"
           >
-            ({apiUrl === API_URL_2 ? 'big files' : 'small files'})
+            ({apiUrl === BIG_API_URL ? 'big files' : 'small files'})
           </h4>
         </>
       )}

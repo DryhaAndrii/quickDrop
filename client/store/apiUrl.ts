@@ -1,4 +1,4 @@
-import { API_URL } from '@/environments'
+import { SMALL_API_URL } from '@/environments'
 import { atom } from 'jotai'
 
-export const apiAtom = atom(API_URL)
+export const apiAtom = atom(SMALL_API_URL)

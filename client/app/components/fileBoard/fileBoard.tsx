@@ -3,7 +3,7 @@ import Button from '../button/button'
 import DragAndDrop from './dragAndDrop'
 import { useAtom } from 'jotai'
 import { apiAtom } from '@/store/apiUrl'
-import { API_URL } from '@/environments'
+import { SMALL_API_URL } from '@/environments'
 import toast from 'react-hot-toast'
 import { fetchData } from '@/app/functionsAndHooks/fetch'
 import { useEndpoints } from '@/endpointsAndPaths'
@@ -31,7 +31,7 @@ export default function FileBoard() {
 
     const filesSize = files.reduce((acc, file) => acc + file.size, 0)
 
-    const smallApi = apiUrl === API_URL
+    const smallApi = apiUrl === SMALL_API_URL
     if (!smallApi && filesSize > MAX_SIZE_BIG_API) {
       toast.error('Max size of file is 500mb')
       return

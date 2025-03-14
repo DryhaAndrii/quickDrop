@@ -32,19 +32,6 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="robots" content="index, follow" />
-        <title>Quick Drop | Fast File Sharing'</title>
-        <meta
-          name="description"
-          content=" 'Quick Drop allows you to share files instantly in temporary rooms. Upload, share, and download files before they disappear!',"
-        />
-        <meta
-          name="keywords"
-          content="file sharing,
-    temporary file storage,
-    secure file transfer,
-    instant file sharing,
-    file exchange"
-        />
         <meta
           name="google-site-verification"
           content="8AfkUjjnnQIS7GXQExZIyz1niGMIdJ1X3OJEOQ5J27M"
