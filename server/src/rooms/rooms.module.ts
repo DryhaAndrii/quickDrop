@@ -16,6 +16,7 @@ import { CleanupService } from './services/cleanup.service'
 import { FilesService } from './services/files.service'
 import { UserService } from './services/user.service'
 import { TokenService } from './services/token.service'
+import { DeleteFileController } from './controllers/deleteFile.controller'
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -37,6 +38,7 @@ import { TokenService } from './services/token.service'
     SavesFileController,
     GetRoomFilesController,
     DownloadFileController,
+    DeleteFileController,
   ],
 })
 export class RoomsModule {}

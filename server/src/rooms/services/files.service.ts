@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Room } from '../room.entity'
-import { mkdirSync, existsSync } from 'fs'
+import { mkdirSync, existsSync, unlinkSync } from 'fs'
 import { readFile, writeFile } from 'fs/promises'
 import { join } from 'path'
 import { extname, basename } from 'path'
@@ -66,5 +66,37 @@ export class FilesService {
     if (!room) throw new NotFoundException(`Room "${roomName}" not found`)
 
     return room.files
+  }
+
+  async deleteFile(roomName: string, storedName: string) {
+    const room = await this.roomsRepository.findOne({ where: { roomName } })
+
+    if (!room) {
+      throw new NotFoundException(`Room "${roomName}" not found`)
+    }
+
+    // Находим файл в массиве files
+    const fileIndex = room.files.findIndex((file) => file.storedName === storedName)
+
+    if (fileIndex === -1) {
+      throw new NotFoundException(`File "${storedName}" not found in room "${roomName}"`)
+    }
+
+    // Удаляем файл из файловой системы
+    const filePath = join('uploads', `room_${roomName}`, 'files', storedName)
+
+    if (existsSync(filePath)) {
+      unlinkSync(filePath) // Удаляем файл
+    } else {
+      throw new NotFoundException(`File "${storedName}" not found in filesystem`)
+    }
+
+    // Удаляем файл из массива files в комнате
+    room.files.splice(fileIndex, 1)
+
+    // Сохраняем обновленную комнату в базе данных
+    await this.roomsRepository.save(room)
+
+    return { message: `File "${storedName}" deleted successfully` }
   }
 }

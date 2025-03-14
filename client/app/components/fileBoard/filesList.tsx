@@ -11,7 +11,9 @@ import GoogleIcon from '../googleIcon/googleIcon'
 const FilesList = forwardRef((_, ref) => {
   const [files, setFiles] = useState<File[]>([])
   const [roomName, __] = useAtom(roomNameAtom)
-  const { getRoomFilesEndpoint, downloadFileEndpoint } = useEndpoints({ roomName })
+  const { getRoomFilesEndpoint, downloadFileEndpoint, deleteFileEndpoint } = useEndpoints({
+    roomName,
+  })
   const { hideLoading, showLoading, isShow } = useLoading()
 
   useEffect(() => {
@@ -57,7 +59,19 @@ const FilesList = forwardRef((_, ref) => {
   }
 
   async function deleteFile(file: File) {
-    console.log("Deleting file:",file);
+    const options = {
+      method: 'DELETE',
+      credentials: 'include',
+    }
+
+    const response = await fetchData(
+      `${deleteFileEndpoint}?roomName=${roomName}&storedName=${file.storedName}`,
+      showLoading,
+      hideLoading,
+      options,
+    )
+
+    await getRoomFiles() // Обновляем список файлов после удаления
   }
 
   return (
@@ -75,7 +89,7 @@ const FilesList = forwardRef((_, ref) => {
               {file.originalName}
             </p>
             <p className="shrink-0 overflow-hidden h-full flex items-center text-ellipsis whitespace-nowrap">
-              {(+file.size/1024/1024).toFixed(2)} mb
+              {(+file.size / 1024 / 1024).toFixed(2)} mb
             </p>
             <div className="size-10 shrink-0">
               <Button onClick={() => downloadFile(file)}>
@@ -83,7 +97,7 @@ const FilesList = forwardRef((_, ref) => {
               </Button>
             </div>
             <div className="size-10 shrink-0">
-            <Button onClick={() => deleteFile(file)}>
+              <Button onClick={() => deleteFile(file)}>
                 <GoogleIcon iconName="delete" />
               </Button>
             </div>

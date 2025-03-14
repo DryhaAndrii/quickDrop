@@ -32,7 +32,6 @@ export default function AuthForm({ handleSubmit }: AuthFormProps) {
   async function checkboxHandler() {
     //Checking if big api is available
     if (apiUrl === SMALL_API_URL) {
-      console.log('Checking if big api is available')
       if (BIG_API_URL) {
         const options = {
           method: 'GET',
