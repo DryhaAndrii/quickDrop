@@ -56,6 +56,10 @@ const FilesList = forwardRef((_, ref) => {
     document.body.removeChild(link)
   }
 
+  async function deleteFile(file: File) {
+    console.log("Deleting file:",file);
+  }
+
   return (
     <>
       <Loading isShow={isShow} />
@@ -79,7 +83,7 @@ const FilesList = forwardRef((_, ref) => {
               </Button>
             </div>
             <div className="size-10 shrink-0">
-              <Button>
+            <Button onClick={() => deleteFile(file)}>
                 <GoogleIcon iconName="delete" />
               </Button>
             </div>
