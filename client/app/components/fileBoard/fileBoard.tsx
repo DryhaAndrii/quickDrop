@@ -3,7 +3,7 @@ import Button from '../button/button'
 import DragAndDrop from './dragAndDrop'
 import { useAtom } from 'jotai'
 import { apiAtom } from '@/store/apiUrl'
-import { SMALL_API_URL } from '@/environments'
+import { BIG_API_FILE_MAX_SIZE, SMALL_API_FILE_MAX_SIZE, SMALL_API_URL } from '@/environments'
 import toast from 'react-hot-toast'
 import { fetchData } from '@/app/functionsAndHooks/fetch'
 import { useEndpoints } from '@/endpointsAndPaths'
@@ -32,15 +32,18 @@ export default function FileBoard() {
     const filesSize = files.reduce((acc, file) => acc + file.size, 0)
 
     const smallApi = apiUrl === SMALL_API_URL
-    if (!smallApi && filesSize > MAX_SIZE_BIG_API) {
-      toast.error('Max size of file is 500mb')
+    if (!smallApi && filesSize > BIG_API_FILE_MAX_SIZE) {
+      toast.error(`Max size of file is ${BIG_API_FILE_MAX_SIZE / 1024 / 1024}mb`) // converting to mb
       return
     }
-    if (smallApi && filesSize > MAX_SIZE_SMALL_API) {
-      toast.error('You cant upload more than 5mb in room that use api for small files')
+    if (smallApi && filesSize > SMALL_API_FILE_MAX_SIZE) {
+      toast.error(
+        `You cant upload more than ${
+          SMALL_API_FILE_MAX_SIZE / 1024 / 1024 //converting to mb
+        }mb in room that use api for small files`,
+      )
       return
     }
-    formData.append('smallApi', smallApi.toString())
 
     const xhr = new XMLHttpRequest()
     showLoading()

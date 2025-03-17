@@ -6,11 +6,9 @@ import {
   Res,
   UploadedFiles,
   UseInterceptors,
-  Body,
 } from '@nestjs/common'
 import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
-import { RoomsService } from '../services/rooms.service'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
@@ -19,28 +17,24 @@ import { unlink, access, mkdir } from 'fs/promises'
 import { promises } from 'fs'
 import * as path from 'path'
 import { FilesService } from '../services/files.service'
+import { ConfigService } from '@nestjs/config'
 
 interface RequestWithCookies extends Request {
   cookies: { [key: string]: string }
 }
-
-interface SaveFilesBody {
-  smallApi: string
-  files: Express.Multer.File[]
+function bytesToMb(bytes: number, rounded = false): number {
+  const result = bytes / 1024 / 1024
+  return rounded ? Number(result.toFixed(2)) : result
 }
-
-const MAX_FILE_SIZE = 500 * 1024 * 1024 // 500 MB in bytes
-const SMALL_API_FILE_SIZE = 5 * 1024 * 1024 // 5 MB in bytes
-
-const BIG_API_MAX_SIZE = 1 * 1024 * 1024 * 1024 // 1 GB in bytes
-const SMALL_API_MAX_SIZE = 15 * 1024 * 1024 // 15 MB in bytes
-
+function mbToBytes(mb: number): number {
+  return mb * 1024 * 1024
+}
 @Controller('rooms')
 export class SavesFileController {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly roomsService: RoomsService,
     private readonly fileService: FilesService,
+    private configService: ConfigService,
   ) {}
 
   async getFolderSize(folderPath: string): Promise<number> {
@@ -71,23 +65,33 @@ export class SavesFileController {
           callback(null, file.fieldname + '-' + uniqueSuffix)
         },
       }),
-      limits: {
-        fileSize: MAX_FILE_SIZE,
-      },
     }),
   )
   async saveFile(
     @Req() req: RequestWithCookies,
     @Res() res: Response,
     @UploadedFiles() files: Express.Multer.File[],
-    @Body() body: SaveFilesBody,
   ) {
     const token = req.cookies['room_token']
     if (!token) throw new UnauthorizedException('No auth token')
 
-    const fileSizeLimit = body.smallApi === 'true' ? SMALL_API_FILE_SIZE : MAX_FILE_SIZE
+    const maxFilesSize = mbToBytes(this.configService.get<number>('MAX_FILES_SIZE') ?? 1)
 
-    req['fileSizeLimit'] = fileSizeLimit
+    let filesSize = 0
+    for (const file of files) {
+      filesSize = filesSize + file.size
+    }
+
+    if (filesSize >= maxFilesSize) {
+      console.log('Files size is bigger then maxFileSize:', filesSize, '>', maxFilesSize)
+      return res.status(400).json({
+        message: `Files limit exceeded. The limit is ${bytesToMb(maxFilesSize)} MB`,
+      })
+    }
+
+    const maxRoomSize = mbToBytes(this.configService.get<number>('MAX_ROOM_SIZE') ?? 15)
+
+    const maxApiSize = mbToBytes(this.configService.get<number>('MAX_API_SIZE') ?? 100)
 
     try {
       const tokenInfo = this.jwtService.verify<{ nickname: string; roomName: string }>(token)
@@ -96,24 +100,57 @@ export class SavesFileController {
       }
       const roomName = tokenInfo.roomName
 
-      const folderPath = path.join(`./uploads/room_${roomName}`)
+      //Checking if api have enough space
+      const uploadsFolderPath = path.join(`./uploads`)
 
-      let currentFolderSize = 0
+      let uploadsFolderSize = 0
       try {
-        await access(folderPath)
-        currentFolderSize = await this.getFolderSize(folderPath)
+        await access(uploadsFolderPath)
+        uploadsFolderSize = await this.getFolderSize(uploadsFolderPath)
       } catch {
-        await mkdir(folderPath, { recursive: true })
+        await mkdir(uploadsFolderPath, { recursive: true })
         console.log('Folder does not exist, creating it now.')
       }
 
-      // If size of folder higher then limit return error
-      if (
-        (body.smallApi === 'true' && currentFolderSize >= SMALL_API_MAX_SIZE) ||
-        (body.smallApi === 'false' && currentFolderSize >= BIG_API_MAX_SIZE)
-      ) {
+      if (uploadsFolderSize + filesSize >= maxApiSize) {
+        console.log(
+          'If we will save these files we will exceed api limit: uploadsFolderSize:',
+          bytesToMb(uploadsFolderSize, true),
+          'FilesSize:',
+          bytesToMb(filesSize, true),
+          'maxApiSize:',
+          bytesToMb(maxApiSize),
+        )
         return res.status(400).json({
-          message: `File limit exceeded. For small API the limit is 15 MB, and for big API the limit is 1 GB.`,
+          message: `Cannot save files. Your files is ${bytesToMb(filesSize, true)},
+          free space in api is: ${bytesToMb(maxApiSize - uploadsFolderSize, true)}`,
+        })
+      }
+
+      //Checking if room folder have enough space
+      const roomFolderPath = path.join(`./uploads/room_${roomName}`)
+
+      let roomFolderSize = 0
+      try {
+        await access(roomFolderPath)
+        roomFolderSize = await this.getFolderSize(roomFolderPath)
+      } catch {
+        await mkdir(roomFolderPath, { recursive: true })
+        console.log('Folder does not exist, creating it now.')
+      }
+
+      if (roomFolderSize + filesSize >= maxRoomSize) {
+        console.log(
+          'If we will save these files we will exceed room limit: folderSize:',
+          bytesToMb(roomFolderSize, true),
+          'FilesSize:',
+          bytesToMb(filesSize, true),
+          'MaxRoomSize:',
+          bytesToMb(maxRoomSize),
+        )
+        return res.status(400).json({
+          message: `Cannot save files. Your files is ${bytesToMb(filesSize, true)},
+          free space in room is: ${bytesToMb(maxRoomSize - roomFolderSize, true)}`,
         })
       }
 
@@ -126,14 +163,6 @@ export class SavesFileController {
         filePaths: savedFilePaths,
       })
     } catch (error) {
-      const err = error as Error & { code?: string }
-
-      if (err.code === 'LIMIT_FILE_SIZE') {
-        return res
-          .status(400)
-          .json({ message: `File is too large. Maximum size is ${MAX_FILE_SIZE}MB.` })
-      }
-
       throw new Error(`Error during saving files: ${error}`)
     }
   }
