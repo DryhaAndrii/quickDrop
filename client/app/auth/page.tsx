@@ -14,7 +14,7 @@ import { roomNameAtom } from '@/store/roomName'
 
 export default function AuthPage() {
   const { hideLoading, showLoading, isShow } = useLoading()
-  const [roomName, setRoomName] = useAtom(roomNameAtom)
+  const [_, setRoomName] = useAtom(roomNameAtom)
   const router = useRouter()
 
   const handleSubmit = async (data: authFormType, url: string) => {

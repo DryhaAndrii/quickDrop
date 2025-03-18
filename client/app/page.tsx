@@ -6,9 +6,11 @@ import HamburgerMenu from './components/hamburgerMenu/hamburgerMenu'
 import Header from './components/header/header'
 import Loading, { useLoading } from './components/loading/loading'
 import { roomNameAtom } from '@/store/roomName'
+import { useRoomMemoryLimits } from './functionsAndHooks/useRoomMemoryLimits'
 
 export default function Home() {
   const { hideLoading, showLoading, isShow } = useLoading()
+  useRoomMemoryLimits()
   const [roomName, _] = useAtom(roomNameAtom)
 
   if (roomName === '') {

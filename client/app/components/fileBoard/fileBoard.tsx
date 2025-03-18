@@ -1,26 +1,35 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Button from '../button/button'
 import DragAndDrop from './dragAndDrop'
 import { useAtom } from 'jotai'
 import { apiAtom } from '@/store/apiUrl'
-import { BIG_API_FILE_MAX_SIZE, SMALL_API_FILE_MAX_SIZE, SMALL_API_URL } from '@/environments'
 import toast from 'react-hot-toast'
-import { fetchData } from '@/app/functionsAndHooks/fetch'
 import { useEndpoints } from '@/endpointsAndPaths'
 import Loading, { useLoading } from '@/app/components/loading/loading'
 import SelectedFiles from './selectedFiles'
 import FilesList from './filesList'
+import { roomMemoryAtom } from '@/store/apiMemory'
 
-const MAX_SIZE_SMALL_API = 5 * 1024 * 1024 // 5 MB in bytes
-const MAX_SIZE_BIG_API = 500 * 1024 * 1024 // 500 MB in bytes
+interface FilesListRef {
+  refreshFiles: () => void
+}
 
 export default function FileBoard() {
   const [files, setFiles] = useState<File[]>([])
+  const [uploadedFilesSize, setUploadedFilesSize] = useState(0)
   const [apiUrl, setApiUrl] = useAtom(apiAtom)
   const [uploadProgress, setUploadProgress] = useState(0)
   const { saveFileEndpoint } = useEndpoints()
   const { hideLoading, showLoading, isShow } = useLoading()
-  const filesListRef = useRef<{ refreshFiles: () => void } | null>(null)
+  const [roomMemory, __] = useAtom(roomMemoryAtom)
+  const [roomSize, setRoomSize] = useState(0)
+
+  const filesListRef = useRef<FilesListRef | null>(null)
+
+  useEffect(() => {
+    setRoomSize(uploadedFilesSize)
+  }, [uploadedFilesSize])
+
   const handleFilesChange = (newFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...newFiles])
   }
@@ -31,17 +40,13 @@ export default function FileBoard() {
 
     const filesSize = files.reduce((acc, file) => acc + file.size, 0)
 
-    const smallApi = apiUrl === SMALL_API_URL
-    if (!smallApi && filesSize > BIG_API_FILE_MAX_SIZE) {
-      toast.error(`Max size of file is ${BIG_API_FILE_MAX_SIZE / 1024 / 1024}mb`) // converting to mb
+    if (filesSize > roomMemory.maxFilesSize * 1024 * 1024) {
+      toast.error(`Files limit exceeded. The limit is ${roomMemory.maxFilesSize} MB`)
       return
     }
-    if (smallApi && filesSize > SMALL_API_FILE_MAX_SIZE) {
-      toast.error(
-        `You cant upload more than ${
-          SMALL_API_FILE_MAX_SIZE / 1024 / 1024 //converting to mb
-        }mb in room that use api for small files`,
-      )
+
+    if(roomSize+filesSize>roomMemory.maxRoomSize*1024*1024){
+      toast.error(`Room limit will exceeded. The limit is ${roomMemory.maxRoomSize} MB`)
       return
     }
 
@@ -90,6 +95,7 @@ export default function FileBoard() {
       }
       setUploadProgress(0)
       hideLoading()
+      //setRoomSize(roomSize + filesSize)
     })
 
     // Error handling
@@ -113,8 +119,10 @@ export default function FileBoard() {
     <div className="shadow-insetShadow rounded-lg p-4 flex flex-col gap-4">
       <Loading isShow={isShow} text={`Loading file: ${Math.round(uploadProgress)}%`} />
       <h3 className="text-lg font-bold text-foreground text-center">File Board</h3>
-
-      <FilesList ref={filesListRef} />
+      <p className='text-foreground'>
+        Current room size: {(roomSize / 1024 / 1024).toFixed(2)} mb of {roomMemory.maxRoomSize} mb
+      </p>
+      <FilesList ref={filesListRef} setUploadedFilesSize={setUploadedFilesSize} />
 
       {/* Drag and drop component */}
       <DragAndDrop onFilesChange={handleFilesChange} />

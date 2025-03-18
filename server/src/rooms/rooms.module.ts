@@ -17,6 +17,7 @@ import { FilesService } from './services/files.service'
 import { UserService } from './services/user.service'
 import { TokenService } from './services/token.service'
 import { DeleteFileController } from './controllers/deleteFile.controller'
+import { GetRoomMemoryLimitsController } from './controllers/getRoomMemoryLimits.controller'
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -39,6 +40,7 @@ import { DeleteFileController } from './controllers/deleteFile.controller'
     GetRoomFilesController,
     DownloadFileController,
     DeleteFileController,
+    GetRoomMemoryLimitsController,
   ],
 })
 export class RoomsModule {}

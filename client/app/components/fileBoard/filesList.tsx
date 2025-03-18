@@ -1,6 +1,6 @@
 import { fetchData } from '@/app/functionsAndHooks/fetch'
 import { File } from '@/types/file'
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react'
 import { useEndpoints } from '@/endpointsAndPaths'
 import Loading, { useLoading } from '../loading/loading'
 import { useAtom } from 'jotai'
@@ -8,7 +8,11 @@ import { roomNameAtom } from '@/store/roomName'
 import Button from '../button/button'
 import GoogleIcon from '../googleIcon/googleIcon'
 
-const FilesList = forwardRef((_, ref) => {
+interface FilesListProps {
+  setUploadedFilesSize: React.Dispatch<React.SetStateAction<number>>
+}
+
+const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => {
   const [files, setFiles] = useState<File[]>([])
   const [roomName, __] = useAtom(roomNameAtom)
   const { getRoomFilesEndpoint, downloadFileEndpoint, deleteFileEndpoint } = useEndpoints({
@@ -39,6 +43,8 @@ const FilesList = forwardRef((_, ref) => {
 
     if (response.files) {
       setFiles(response.files)
+      const filesSize = response.files.reduce((acc: any, file: { size: any }) => acc + Number(file.size), 0)
+      setUploadedFilesSize(filesSize)
     }
   }
 
@@ -71,14 +77,14 @@ const FilesList = forwardRef((_, ref) => {
       options,
     )
 
-    await getRoomFiles() // Обновляем список файлов после удаления
+    await getRoomFiles()
   }
 
   return (
     <>
       <Loading isShow={isShow} />
       <h4 className="text-foreground">Files</h4>
-      {files.length === 0 && <p>No files in this room yet :P</p>}
+      {files.length === 0 && <p className='text-foreground'>No files in this room yet :P</p>}
       <div className="flex flex-col gap-2 text-foreground max-h-96 overflow-auto custom-scroll">
         {files.map((file, index) => (
           <div

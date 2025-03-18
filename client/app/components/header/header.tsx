@@ -1,6 +1,5 @@
 'use client'
 import { Roboto } from 'next/font/google'
-import { ThemeSwitcher } from '@/app/components/theme/theme'
 import { usePathname } from 'next/navigation'
 import { useAtom } from 'jotai'
 import { roomNameAtom } from '@/store/roomName'
@@ -16,7 +15,7 @@ const roboto = Roboto({
 
 export default function Header() {
   const pathname = usePathname()
-  const [roomName, setRoomName] = useAtom(roomNameAtom)
+  const [roomName, _] = useAtom(roomNameAtom)
   const [apiUrl, setApiUrl] = useAtom(apiAtom)
   return (
     <header className="min-h-10 flex flex-col md:flex-row justify-between items-center relative md:pr-12 gap-2">
@@ -48,9 +47,9 @@ export default function Header() {
           </h1>
           <h4
             className="text-2xl drop-shadow-textShadow
-      text-foreground shrink-0 md:absolute right-20 md:top-1/2 md:translate-y-[-50%]"
+      text-foreground shrink-0 md:absolute right-20 md:top-1/2 md:translate-y-[-50%] text-center"
           >
-            ({apiUrl === BIG_API_URL ? 'big files' : 'small files'})
+            {apiUrl === BIG_API_URL ? 'Big files api' : 'Small files api'}
           </h4>
         </>
       )}

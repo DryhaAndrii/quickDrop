@@ -16,6 +16,7 @@ export function useEndpoints({ roomName = '' }: useEndpointsProps = {}) {
     getRoomFilesEndpoint: `${apiUrl}/rooms/${roomName}/files`,
     downloadFileEndpoint: `${apiUrl}/rooms/${roomName}/download/`,
     deleteFileEndpoint: `${apiUrl}/rooms/deleteFile`,
+    getRoomMemoryLimitsEndpoint: `${apiUrl}/rooms/getRoomMemoryLimits`,
   }
 }
 
