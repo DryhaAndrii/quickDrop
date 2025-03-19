@@ -56,6 +56,7 @@ export class JoinRoomController {
       const token = this.jwtService.sign({
         nickname,
         roomName: existingRoom.roomName,
+        password: existingRoom.password,
       })
 
       res.cookie('room_token', token, {

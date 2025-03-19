@@ -18,6 +18,8 @@ import { UserService } from './services/user.service'
 import { TokenService } from './services/token.service'
 import { DeleteFileController } from './controllers/deleteFile.controller'
 import { GetRoomMemoryLimitsController } from './controllers/getRoomMemoryLimits.controller'
+import { InviteController } from './controllers/invite.controller'
+import { InviteService } from './services/invite.service'
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -30,7 +32,7 @@ import { GetRoomMemoryLimitsController } from './controllers/getRoomMemoryLimits
     TypeOrmModule.forFeature([Room]),
     ScheduleModule.forRoot(),
   ],
-  providers: [RoomsService, CleanupService, FilesService, UserService, TokenService],
+  providers: [RoomsService, CleanupService, FilesService, UserService, TokenService, InviteService],
   controllers: [
     CreateRoomController,
     JoinRoomController,
@@ -41,6 +43,7 @@ import { GetRoomMemoryLimitsController } from './controllers/getRoomMemoryLimits
     DownloadFileController,
     DeleteFileController,
     GetRoomMemoryLimitsController,
+    InviteController,
   ],
 })
 export class RoomsModule {}

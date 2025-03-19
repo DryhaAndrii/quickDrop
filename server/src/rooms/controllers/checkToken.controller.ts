@@ -20,12 +20,15 @@ export class CheckTokenController {
     if (!token) throw new UnauthorizedException('No auth token')
 
     try {
-      const user = this.jwtService.verify<{ nickname: string; roomName: string }>(token)
-      await this.tokenService.updateTokenIssuedAt(user.roomName, user.nickname)
+      const user = this.jwtService.verify<{ nickname: string; roomName: string; password: string }>(
+        token,
+      )
+      await this.tokenService.updateTokenIssuedAt(user.roomName, user.nickname, user.password)
 
       const newToken = this.jwtService.sign({
         nickname: user.nickname,
         roomName: user.roomName,
+        password: user.password,
       })
 
       res.cookie('room_token', newToken, {
