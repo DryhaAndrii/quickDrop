@@ -17,6 +17,7 @@
   --central-panel-shadow: 4px 4px 14px 0px var(--foreground), 0 0 20px 2px var(--background);
 
   --text-shadow: 0px 0px 2px var(--foreground);
+  --small-text-shadow: 0px 0px 1px var(--foreground);
 
   --input-shadow: inset 0px 0px 3px var(--foreground);
 
@@ -43,6 +44,7 @@
   --central-panel-shadow: 1px 1px 14px 0px var(--foreground), 0 0 20px 2px var(--background);
 
   --text-shadow: 0px 0px 2px var(--foreground);
+  --small-text-shadow: 0px 0px 1px var(--foreground);
 
   --input-shadow: inset 0px 0px 3px var(--foreground);
 

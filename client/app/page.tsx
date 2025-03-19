@@ -2,7 +2,6 @@
 import { useAtom } from 'jotai'
 import CentralPanel from './components/centralPanel/centralPanel'
 import FileBoard from './components/fileBoard/fileBoard'
-import HamburgerMenu from './components/hamburgerMenu/hamburgerMenu'
 import Header from './components/header/header'
 import Loading, { useLoading } from './components/loading/loading'
 import { roomNameAtom } from '@/store/roomName'

@@ -10,7 +10,7 @@ export function useRoomAuth() {
   const router = useRouter()
   const pathname = usePathname()
   const { checkRoomAuthEndpoint } = useEndpoints()
-  const { authPath } = usePaths()
+  const { authPath, invitePath } = usePaths()
   const [__, setRoomName] = useAtom(roomNameAtom)
   const [apiUrl, _] = useAtom(apiAtom)
   const isChecking = useRef(false)
@@ -27,19 +27,20 @@ export function useRoomAuth() {
 
     if (!response) {
       if (pathname !== authPath) {
+        if(pathname=== `/${invitePath}`) return
         router.push(authPath)
       }
       return
     }
 
     setRoomName(response.user.roomName)
-    if (pathname === authPath) {
+    if (pathname === authPath || pathname === `/${invitePath}`) {
       router.push('/')
     }
-  }, [router, checkRoomAuthEndpoint, pathname, authPath, setRoomName])
+  }, [router, checkRoomAuthEndpoint, pathname, authPath, invitePath, setRoomName])
 
   useEffect(() => {
-    if (apiUrl) {
+    if (apiUrl !== '') {
       checkAuth()
     }
   }, [checkAuth])

@@ -17,11 +17,13 @@ export function useEndpoints({ roomName = '' }: useEndpointsProps = {}) {
     downloadFileEndpoint: `${apiUrl}/rooms/${roomName}/download/`,
     deleteFileEndpoint: `${apiUrl}/rooms/deleteFile`,
     getRoomMemoryLimitsEndpoint: `${apiUrl}/rooms/getRoomMemoryLimits`,
+    createInviteEndpoint: `${apiUrl}/rooms/createInvite`
   }
 }
 
 export function usePaths() {
   return {
     authPath: `/auth`,
+    invitePath:`invite`
   }
 }

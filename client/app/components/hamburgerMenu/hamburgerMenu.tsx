@@ -5,10 +5,14 @@ import Button from '../button/button'
 import { ThemeSwitcher } from '../theme/theme'
 import GoogleIcon from '../googleIcon/googleIcon'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import LogoutButton from '../logoutButton/logoutButton'
+import CreateInviteButton from '../createInviteButton/createInviteButton'
 
 export default function HamburgerMenu({ children }: { children?: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
 
   const toggleMenu = () => setIsOpen(!isOpen)
 
@@ -39,7 +43,7 @@ export default function HamburgerMenu({ children }: { children?: React.ReactNode
       {createPortal(
         <div
           className={`fixed top-0 right-0 w-[80%] md:w-96 h-full bg-central-panel-gradient text-foreground shadow-centralPanelShadow
-             transition-transform duration-300 ease-in-out p-5 z-[100]
+             transition-transform duration-300 ease-in-out p-5 z-[50]
              ${isOpen ? 'transform translate-x-0' : 'transform translate-x-full'}`}
         >
           <div ref={menuRef} className="flex flex-col gap-5 [&>*]:h-10 relative">
@@ -52,6 +56,13 @@ export default function HamburgerMenu({ children }: { children?: React.ReactNode
             </Link>
 
             <ThemeSwitcher />
+
+            {pathname === '/' && (
+              <>
+                <CreateInviteButton />
+                <LogoutButton />
+              </>
+            )}
             {children}
           </div>
         </div>,

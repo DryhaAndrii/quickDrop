@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation'
 import { useAtom } from 'jotai'
 import { roomNameAtom } from '@/store/roomName'
 import HamburgerMenu from '../hamburgerMenu/hamburgerMenu'
-import LogoutButton from '../logoutButton/logoutButton'
 import { apiAtom } from '@/store/apiUrl'
 import { BIG_API_URL } from '@/environments'
 
@@ -23,7 +22,7 @@ export default function Header() {
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
         rel="stylesheet"
       />
-      {pathname === '/auth' && (
+      {(pathname === '/auth' || pathname === '/invite') && (
         <h2
           className={`${roboto.className} w-full text-center text-5xl drop-shadow-textShadow text-foreground`}
         >
@@ -54,8 +53,9 @@ export default function Header() {
         </>
       )}
 
+      {/* Button that open hamburger menu */}
       <div className="size-10 absolute right-0 top-0  ">
-        <HamburgerMenu>{pathname === '/' && <LogoutButton />}</HamburgerMenu>
+        <HamburgerMenu />
       </div>
     </header>
   )

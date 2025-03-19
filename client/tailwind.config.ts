@@ -19,6 +19,7 @@ export default {
       },
       dropShadow: {
         textShadow: "var(--text-shadow)",
+        smallTextShadow: "var(--small-text-shadow)"
       },
 
       //==================backgrounds====================
