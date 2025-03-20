@@ -12,10 +12,19 @@ import { useAtom } from 'jotai'
 import { apiAtom } from '@/store/apiUrl'
 import { fetchData } from '../functionsAndHooks/fetch'
 import toast from 'react-hot-toast'
+import { useSearchParams } from 'next/navigation'
+import { useEndpoints } from '@/endpointsAndPaths'
+import { roomNameAtom } from '@/store/roomName'
+import { useRouter } from 'next/navigation'
 
 export default function AuthPage() {
   const { hideLoading, showLoading, isShow } = useLoading()
+  const { exchangeInviteIdEndpoint } = useEndpoints()
   const [apiUrl, setApiUrl] = useAtom(apiAtom)
+  const searchParams = useSearchParams()
+  const inviteId = searchParams.get('inviteId')
+  const [_, setRoomName] = useAtom(roomNameAtom)
+  const router = useRouter()
 
   async function checkboxHandler() {
     //Checking if big api is available
@@ -45,8 +54,22 @@ export default function AuthPage() {
     })
   }
 
-  function submitHandler(data: object) {
-    console.log('data:', data)
+  async function submitHandler(data: { nickname: string }) {
+    const url = `${exchangeInviteIdEndpoint}/${inviteId}/${data.nickname}`
+    const options = {
+      method: 'GET',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    }
+
+    const response = await fetchData<any>(url, showLoading, hideLoading, options)
+
+    console.log('response:', response)
+    if (response) {
+      setRoomName(response.room.roomName)
+      toast.success(response.message)
+      router.push('/')
+    }
   }
 
   return (

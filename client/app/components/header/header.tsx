@@ -54,7 +54,7 @@ export default function Header() {
       )}
 
       {/* Button that open hamburger menu */}
-      <div className="size-10 absolute right-0 top-0  ">
+      <div className="size-10 absolute right-0  ">
         <HamburgerMenu />
       </div>
     </header>

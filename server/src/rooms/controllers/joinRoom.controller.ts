@@ -67,7 +67,7 @@ export class JoinRoomController {
       })
 
       return res.json({
-        message: 'User joined the room successfully!',
+        message: 'Joined the room successfully!',
         token,
         user: existingUser,
         room: existingRoom,

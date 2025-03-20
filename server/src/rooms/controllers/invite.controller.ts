@@ -13,6 +13,8 @@ import { Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
 import { InviteService } from '../services/invite.service'
 import { RoomsService } from '../services/rooms.service'
+import { ConfigService } from '@nestjs/config'
+import { UserService } from '../services/user.service'
 
 interface RequestWithCookies extends Request {
   cookies: { [key: string]: string }
@@ -24,6 +26,8 @@ export class InviteController {
     private readonly jwtService: JwtService,
     private readonly inviteService: InviteService,
     private readonly roomsService: RoomsService,
+    private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {}
 
   @Post('createInvite')
@@ -53,26 +57,65 @@ export class InviteController {
     }
   }
 
-  @Get('rooms/exchangeInviteId/:inviteId/:nickname')
-  exchangeInvite(
+  @Get('exchangeInviteId/:inviteId/:nickname')
+  async exchangeInvite(
     @Param('inviteId') inviteId: string,
     @Param('nickname') nickname: string,
     @Req() req: RequestWithCookies,
     @Res() res: Response,
   ) {
     try {
-      console.log(inviteId)
+      console.log('InviteId:', inviteId, 'nickname:', nickname)
 
       const { password, roomName } = this.inviteService.exchangeInviteIdToToken(inviteId)
 
       console.log('exchangeResult:', password, roomName)
 
+      const existingRoom = await this.roomsService.findByRoomName(roomName)
+      if (!existingRoom) {
+        throw new NotFoundException('Room not found')
+      }
+
+      const existingUser = await this.userService.findUserByNickname(existingRoom.id, nickname)
+
+      if (existingUser) throw new Error('User with this nickname already exists.')
+
+      await this.userService.addUserToRoom(existingRoom.id, nickname)
+
+      const maxFilesSize = this.configService.get<number>('MAX_FILES_SIZE') ?? 15
+
+      const maxRoomSize = this.configService.get<number>('MAX_ROOM_SIZE') ?? 100
+
+      const roomMemory = {
+        maxFilesSize,
+        maxRoomSize,
+      }
+
+      const token = this.jwtService.sign({
+        nickname,
+        roomName: existingRoom.roomName,
+        password: existingRoom.password,
+      })
+
+      res.cookie('room_token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        path: '/',
+      })
+
       return res.json({
-        message: 'Invite exchanged successfully!',
-        inviteId,
+        message: 'Joined the room successfully!',
+        token,
+        room: existingRoom,
+        roomMemory,
       })
     } catch (err) {
       console.log('Error exchanging invite:', err)
+      if ((err as Error).message === 'Room not found')
+        return res
+          .status(404)
+          .json({ message: 'The room you were invited to has already been deleted.' })
       return res.status(500).json({ message: (err as Error).message })
     }
   }

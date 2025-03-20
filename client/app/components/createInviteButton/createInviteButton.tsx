@@ -18,11 +18,8 @@ export default function CreateInviteButton() {
     }
     const response = await fetchData<any>(url, showLoading, hideLoading, options)
     const currentUrl = window.location.href
-    const newUrl = new URL(currentUrl)
-    newUrl.pathname = `${invitePath}/${response.inviteId}`
-    await navigator.clipboard.writeText(newUrl.toString())
+    await navigator.clipboard.writeText(`${currentUrl}${invitePath}?inviteId=${response.inviteId}`)
     toast.success('Invite ID saved to clipboard')
-    console.log('Invite response:', response)
   }
 
   return (

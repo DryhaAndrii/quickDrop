@@ -17,7 +17,8 @@ export function useEndpoints({ roomName = '' }: useEndpointsProps = {}) {
     downloadFileEndpoint: `${apiUrl}/rooms/${roomName}/download/`,
     deleteFileEndpoint: `${apiUrl}/rooms/deleteFile`,
     getRoomMemoryLimitsEndpoint: `${apiUrl}/rooms/getRoomMemoryLimits`,
-    createInviteEndpoint: `${apiUrl}/rooms/createInvite`
+    createInviteEndpoint: `${apiUrl}/rooms/createInvite`,
+    exchangeInviteIdEndpoint:`${apiUrl}/rooms/exchangeInviteId`,
   }
 }
 
