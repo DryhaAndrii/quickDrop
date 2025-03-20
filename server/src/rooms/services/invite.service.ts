@@ -18,8 +18,6 @@ export class InviteService {
     } catch (error) {
       console.error('Error generating invite id:', error)
       throw error
-    } finally {
-      console.log('Invites:', this.invites)
     }
   }
   exchangeInviteIdToToken(inviteId: string): { roomName: string; password: string } {
@@ -30,8 +28,6 @@ export class InviteService {
     } catch (error) {
       console.error('Error exchanging invite id:', error)
       throw error
-    } finally {
-      console.log('Invites:', this.invites)
     }
   }
 }

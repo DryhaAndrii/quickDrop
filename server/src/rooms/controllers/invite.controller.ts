@@ -65,11 +65,7 @@ export class InviteController {
     @Res() res: Response,
   ) {
     try {
-      console.log('InviteId:', inviteId, 'nickname:', nickname)
-
       const { password, roomName } = this.inviteService.exchangeInviteIdToToken(inviteId)
-
-      console.log('exchangeResult:', password, roomName)
 
       const existingRoom = await this.roomsService.findByRoomName(roomName)
       if (!existingRoom) {
@@ -93,8 +89,8 @@ export class InviteController {
 
       const token = this.jwtService.sign({
         nickname,
-        roomName: existingRoom.roomName,
-        password: existingRoom.password,
+        roomName: roomName,
+        password: password,
       })
 
       res.cookie('room_token', token, {
