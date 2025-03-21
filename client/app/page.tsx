@@ -29,7 +29,7 @@ export default function Home() {
       <Loading isShow={isShow} />
       <div className="w-[95%] h-[95%]">
         <CentralPanel>
-          <div className="w-full h-full flex flex-col p-4 gap-5">
+          <div className="w-full h-full flex flex-col p-2 md:p-4 gap-5">
             <Header />
             <FileBoard />
           </div>

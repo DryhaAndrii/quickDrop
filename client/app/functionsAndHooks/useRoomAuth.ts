@@ -5,6 +5,7 @@ import { fetchData } from './fetch'
 import { useAtom } from 'jotai'
 import { roomNameAtom } from '@/store/roomName'
 import { apiAtom } from '@/store/apiUrl'
+import { nicknameAtom } from '@/store/nickname'
 
 export function useRoomAuth() {
   const router = useRouter()
@@ -12,6 +13,7 @@ export function useRoomAuth() {
   const { checkRoomAuthEndpoint } = useEndpoints()
   const { authPath, invitePath } = usePaths()
   const [__, setRoomName] = useAtom(roomNameAtom)
+  const [___, setNickname] = useAtom(nicknameAtom)
   const [apiUrl, _] = useAtom(apiAtom)
   const isChecking = useRef(false)
 
@@ -27,13 +29,14 @@ export function useRoomAuth() {
 
     if (!response) {
       if (pathname !== authPath) {
-        if(pathname=== `/${invitePath}`) return
+        if (pathname === `/${invitePath}`) return
         router.push(authPath)
       }
       return
     }
 
     setRoomName(response.user.roomName)
+    setNickname(response.user.nickname)
     if (pathname === authPath || pathname === `/${invitePath}`) {
       router.push('/')
     }

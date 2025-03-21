@@ -16,6 +16,7 @@ import { useSearchParams } from 'next/navigation'
 import { useEndpoints } from '@/endpointsAndPaths'
 import { roomNameAtom } from '@/store/roomName'
 import { useRouter } from 'next/navigation'
+import { nicknameAtom } from '@/store/nickname'
 
 export default function AuthPage() {
   const { hideLoading, showLoading, isShow } = useLoading()
@@ -24,6 +25,7 @@ export default function AuthPage() {
   const searchParams = useSearchParams()
   const inviteId = searchParams.get('inviteId')
   const [_, setRoomName] = useAtom(roomNameAtom)
+  const [__, setNickname] = useAtom(nicknameAtom)
   const router = useRouter()
 
   async function checkboxHandler() {
@@ -67,6 +69,7 @@ export default function AuthPage() {
     console.log('response:', response)
     if (response) {
       setRoomName(response.room.roomName)
+      setNickname(response.nickname)
       toast.success(response.message)
       router.push('/')
     }

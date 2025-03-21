@@ -7,6 +7,8 @@ import { useAtom } from 'jotai'
 import { roomNameAtom } from '@/store/roomName'
 import Button from '../button/button'
 import GoogleIcon from '../googleIcon/googleIcon'
+import { nicknameAtom } from '@/store/nickname'
+import toast from 'react-hot-toast'
 
 interface FilesListProps {
   setUploadedFilesSize: React.Dispatch<React.SetStateAction<number>>
@@ -14,7 +16,8 @@ interface FilesListProps {
 
 const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => {
   const [files, setFiles] = useState<File[]>([])
-  const [roomName, __] = useAtom(roomNameAtom)
+  const [roomName, _] = useAtom(roomNameAtom)
+  const [nickname, __] = useAtom(nicknameAtom)
   const { getRoomFilesEndpoint, downloadFileEndpoint, deleteFileEndpoint } = useEndpoints({
     roomName,
   })
@@ -43,7 +46,10 @@ const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => 
 
     if (response.files) {
       setFiles(response.files)
-      const filesSize = response.files.reduce((acc: any, file: { size: any }) => acc + Number(file.size), 0)
+      const filesSize = response.files.reduce(
+        (acc: any, file: { size: any }) => acc + Number(file.size),
+        0,
+      )
       setUploadedFilesSize(filesSize)
     }
   }
@@ -65,6 +71,11 @@ const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => 
   }
 
   async function deleteFile(file: File) {
+    console.log('Your nickname:', nickname, 'Creator:', file.creator)
+    if (nickname !== file.creator) {
+      toast.error('Only creator can delete file')
+      return
+    }
     const options = {
       method: 'DELETE',
       credentials: 'include',
@@ -84,16 +95,20 @@ const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => 
     <>
       <Loading isShow={isShow} />
       <h4 className="text-foreground">Files</h4>
-      {files.length === 0 && <p className='text-foreground'>No files in this room yet :P</p>}
+      {files.length === 0 && <p className="text-foreground">No files in this room yet :P</p>}
       <div className="flex flex-col gap-2 text-foreground max-h-96 overflow-auto custom-scroll">
         {files.map((file, index) => (
           <div
-            className={`h-16 p-1 px-4 rounded-lg border border-foreground flex items-center gap-4`}
+            className={`h-16 p-1 px-2 md:px-4 rounded-lg border border-foreground flex items-center gap-2 relative`}
             key={index}
           >
-            <p className="grow overflow-hidden h-full flex items-center text-ellipsis whitespace-nowrap">
-              {file.originalName}
-            </p>
+            <div className="grow min-w-0 flex flex-col">
+              <p className="overflow-hidden text-ellipsis whitespace-nowrap">{file.originalName}</p>
+              <p className="text-[10px] whitespace-nowrap text-ellipsis w-full overflow-hidden">
+                {file.creator}
+              </p>
+            </div>
+
             <p className="shrink-0 overflow-hidden h-full flex items-center text-ellipsis whitespace-nowrap">
               {(+file.size / 1024 / 1024).toFixed(2)} mb
             </p>

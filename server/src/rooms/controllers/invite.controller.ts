@@ -103,6 +103,7 @@ export class InviteController {
       return res.json({
         message: 'Joined the room successfully!',
         token,
+        nickname,
         room: existingRoom,
         roomMemory,
       })

@@ -116,7 +116,7 @@ export default function FileBoard() {
   }
 
   return (
-    <div className="shadow-insetShadow rounded-lg p-4 flex flex-col gap-4">
+    <div className="shadow-insetShadow rounded-lg p-2 md:p-4 flex flex-col gap-4">
       <Loading isShow={isShow} text={`Loading file: ${Math.round(uploadProgress)}%`} />
       <h3 className="text-lg font-bold text-foreground text-center">File Board</h3>
       <p className='text-foreground'>

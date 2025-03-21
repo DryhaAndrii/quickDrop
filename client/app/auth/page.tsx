@@ -11,10 +11,12 @@ import { authFormType } from '@/types/authForm'
 
 import { useAtom } from 'jotai'
 import { roomNameAtom } from '@/store/roomName'
+import { nicknameAtom } from '@/store/nickname'
 
 export default function AuthPage() {
   const { hideLoading, showLoading, isShow } = useLoading()
   const [_, setRoomName] = useAtom(roomNameAtom)
+  const [__, setNickname] = useAtom(nicknameAtom)
   const router = useRouter()
 
   const handleSubmit = async (data: authFormType, url: string) => {
@@ -35,6 +37,7 @@ export default function AuthPage() {
 
     if (response) {
       setRoomName(response.room.roomName)
+      setNickname(response.nickname)
       toast.success(response.message)
       router.push('/')
     }

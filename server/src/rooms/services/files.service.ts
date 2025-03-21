@@ -19,7 +19,7 @@ export class FilesService {
     private roomsRepository: Repository<Room>,
   ) {}
 
-  async saveFiles(roomName: string, files: Express.Multer.File[]) {
+  async saveFiles(roomName: string, creator: string, files: Express.Multer.File[]) {
     const room = await this.roomsRepository.findOne({ where: { roomName } })
 
     if (!room) {
@@ -45,6 +45,7 @@ export class FilesService {
         const finalPath = join(filesDir, uniqueFileName)
         await writeFile(finalPath, fileBuffer)
         return {
+          creator,
           originalName: file.originalname,
           storedName: uniqueFileName,
           path: finalPath,

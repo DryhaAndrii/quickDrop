@@ -98,7 +98,7 @@ export class SavesFileController {
       if (!files || files.length === 0) {
         return res.status(400).json({ message: 'No files uploaded' })
       }
-      const roomName = tokenInfo.roomName
+      const { roomName, nickname } = tokenInfo
 
       //Checking if api have enough space
       const uploadsFolderPath = path.join(`./uploads`)
@@ -154,7 +154,7 @@ export class SavesFileController {
         })
       }
 
-      const savedFilePaths = await this.fileService.saveFiles(roomName, files)
+      const savedFilePaths = await this.fileService.saveFiles(roomName, nickname, files)
 
       // Deleting temporary files
       await Promise.all(files.map((file) => unlink(file.path)))
