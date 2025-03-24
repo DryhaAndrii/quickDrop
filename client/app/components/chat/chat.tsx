@@ -38,7 +38,10 @@ export default function Chat() {
     }
     const response = await fetchData<any>(getMessagesEndpoint, undefined, undefined, options)
 
-    setMessages(response.messages)
+    // Сравниваем новые сообщения с текущими
+    if (JSON.stringify(response.messages) !== JSON.stringify(messages)) {
+      setMessages(response.messages)
+    }
   }
 
   async function handleMessage(message: any) {
@@ -63,11 +66,6 @@ export default function Chat() {
     <div className="shadow-insetShadow rounded-lg p-2 md:p-4 flex flex-col gap-4">
       <Loading isShow={isShow} />
       <h3 className="text-lg font-bold text-foreground text-center">Chat</h3>
-      {/* <div className='flex flex-col gap-2 max-h-[400] overflow-auto custom-scroll'>
-        {messages?.map((message, index) => (
-          <Message key={index} message={message} />
-        ))}
-      </div> */}
       {messages && messages.length > 0 && <MessagesContainer messages={messages} />}
 
       <MessageInput handleMessage={handleMessage} />
