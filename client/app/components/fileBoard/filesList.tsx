@@ -71,7 +71,6 @@ const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => 
   }
 
   async function deleteFile(file: File) {
-    console.log('Your nickname:', nickname, 'Creator:', file.creator)
     if (nickname !== file.creator) {
       toast.error('Only creator can delete file')
       return

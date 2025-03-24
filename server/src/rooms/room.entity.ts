@@ -14,6 +14,13 @@ export class Room {
   created_at: Date
 
   @Column('json', { default: () => "'[]'" })
+  messages: {
+    authorNickname: string
+    createdAt: Date
+    text: string
+  }[]
+
+  @Column('json', { default: () => "'[]'" })
   users: { nickname: string; tokenIssuedAt: Date }[]
 
   @Column('json', { default: () => "'[]'" })

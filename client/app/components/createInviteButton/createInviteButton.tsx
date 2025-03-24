@@ -25,7 +25,7 @@ export default function CreateInviteButton() {
   return (
     <>
       <Loading isShow={isShow} />
-      <Button onClick={createInvite}>Create invite</Button>
+      <Button variant='rounded' onClick={createInvite}>Create invite</Button>
     </>
   )
 }

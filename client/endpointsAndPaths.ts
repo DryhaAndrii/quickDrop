@@ -19,6 +19,8 @@ export function useEndpoints({ roomName = '' }: useEndpointsProps = {}) {
     getRoomMemoryLimitsEndpoint: `${apiUrl}/rooms/getRoomMemoryLimits`,
     createInviteEndpoint: `${apiUrl}/rooms/createInvite`,
     exchangeInviteIdEndpoint:`${apiUrl}/rooms/exchangeInviteId`,
+    addMessagesEndpoint:`${apiUrl}/rooms/addMessage`,
+    getMessagesEndpoint:`${apiUrl}/rooms/${roomName}/getAllMessages`
   }
 }
 

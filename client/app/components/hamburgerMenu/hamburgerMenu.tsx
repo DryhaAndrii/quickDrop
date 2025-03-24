@@ -34,7 +34,7 @@ export default function HamburgerMenu({ children }: { children?: React.ReactNode
     <>
       {/* Button */}
       <div className="size-full">
-        <Button onClick={toggleMenu}>
+        <Button variant='rounded' onClick={toggleMenu}>
           <GoogleIcon iconName="menu" />
         </Button>
       </div>
@@ -48,11 +48,11 @@ export default function HamburgerMenu({ children }: { children?: React.ReactNode
         >
           <div ref={menuRef} className="flex flex-col gap-5 [&>*]:h-10 relative">
             {/* Button that close menu */}
-            <Button onClick={toggleMenu}>
+            <Button variant='rounded' onClick={toggleMenu}>
               <GoogleIcon iconName="close" />
             </Button>
             <Link href={'https://whole-proven-mullet.ngrok-free.app'}>
-              <Button>Prove big api</Button>
+              <Button variant='rounded'>Prove big api</Button>
             </Link>
 
             <ThemeSwitcher />

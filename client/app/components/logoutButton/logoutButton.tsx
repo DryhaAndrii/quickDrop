@@ -27,7 +27,7 @@ export default function LogoutButton() {
   return (
     <>
       <Loading isShow={isShow} />
-      <Button onClick={logout}>Logout</Button>
+      <Button variant='rounded' onClick={logout}>Logout</Button>
     </>
   )
 }

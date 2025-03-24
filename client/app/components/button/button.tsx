@@ -1,6 +1,6 @@
 interface ButtonProps {
   children?: React.ReactNode
-  variant?: 'default' | 'fullRounded'
+  variant?: 'default' | 'fullRounded' | 'rounded'
   type?: 'button' | 'submit'
   onClick?: () => void
 }
@@ -18,7 +18,8 @@ export default function Button({
     active:translate-y-[2px] active:shadow-activeShadow
   `
   const variants = {
-    default: 'rounded-lg',
+    default: 'rounded-none',
+    rounded: 'rounded-lg',
     fullRounded: 'rounded-full',
   }
 

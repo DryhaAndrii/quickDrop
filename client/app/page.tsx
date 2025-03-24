@@ -6,6 +6,7 @@ import Header from './components/header/header'
 import Loading, { useLoading } from './components/loading/loading'
 import { roomNameAtom } from '@/store/roomName'
 import { useRoomMemoryLimits } from './functionsAndHooks/useRoomMemoryLimits'
+import Chat from './components/chat/chat'
 
 export default function Home() {
   const { hideLoading, showLoading, isShow } = useLoading()
@@ -32,6 +33,7 @@ export default function Home() {
           <div className="w-full h-full flex flex-col p-2 md:p-4 gap-5">
             <Header />
             <FileBoard />
+            <Chat />
           </div>
         </CentralPanel>
       </div>

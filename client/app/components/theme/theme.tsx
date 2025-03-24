@@ -46,7 +46,7 @@ export function ThemeSwitcher() {
   const currentTheme = theme === 'system' ? systemTheme : theme
 
   return (
-    <Button onClick={themeButtonHandler}>
+    <Button variant='rounded' onClick={themeButtonHandler}>
       <span className='flex justify-center items-center' style={{ textShadow: `0px 0px 4px var(--background)` }}>
         {currentTheme === 'dark' ? (
           <GoogleIcon iconName="light_mode" />
