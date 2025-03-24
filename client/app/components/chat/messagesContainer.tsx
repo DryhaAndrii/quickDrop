@@ -9,33 +9,42 @@ interface Props {
 export default memo(function MessagesContainer({ messages }: Props) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const [autoScroll, setAutoScroll] = useState(true)
+  const [autoScroll, setAutoScroll] = useState(false)
 
   const memoizedMessages = useMemo(
     () => messages?.map((message, index) => <Message key={index} message={message} />),
-    [messages]
+    [messages],
   )
 
-  // Проверяем, находится ли пользователь внизу
   const isScrolledToBottom = () => {
     if (!containerRef.current) return true
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current
-    return scrollHeight - scrollTop <= clientHeight + 50 // Небольшой запас в 50px
+    return scrollHeight - scrollTop <= clientHeight + 50
   }
 
-  // Скролл вниз при новых сообщениях, если пользователь уже внизу
   useEffect(() => {
-    if (autoScroll && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
-    }
+    if (!containerRef.current || !autoScroll) return
+
+    // Используем scrollTop вместо scrollIntoView
+    containerRef.current.scrollTop = containerRef.current.scrollHeight
   }, [messages, autoScroll])
 
-  // Обработчик скролла для определения, нужно ли автоскроллить
   const handleScroll = () => {
     if (containerRef.current) {
       setAutoScroll(isScrolledToBottom())
     }
   }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (containerRef.current) {
+        setAutoScroll(false)
+        containerRef.current.scrollTop = containerRef.current.scrollHeight
+      }
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <div
