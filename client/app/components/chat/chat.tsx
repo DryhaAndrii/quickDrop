@@ -9,6 +9,7 @@ import Loading, { useLoading } from '@/app/components/loading/loading'
 import { MessageType } from '@/types/message'
 import MessagesContainer from './messagesContainer'
 import HamburgerMenu from '../hamburgerMenu/hamburgerMenu'
+import Users from './users'
 
 export default function Chat() {
   const [messages, setMessages] = useState<MessageType[]>([])
@@ -62,9 +63,10 @@ export default function Chat() {
   }
 
   return (
-    <div className="shadow-insetShadow rounded-lg p-2 md:p-4 flex flex-col gap-4">
+    <div className="shadow-insetShadow rounded-lg p-2 md:p-4 flex flex-col gap-4 relative">
       <Loading isShow={isShow} />
       <h3 className="text-lg font-bold text-foreground text-center">Chat</h3>
+      <Users />
 
       {messages && messages.length > 0 && <MessagesContainer messages={messages} />}
 

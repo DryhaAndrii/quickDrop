@@ -18,15 +18,16 @@ export function useEndpoints({ roomName = '' }: useEndpointsProps = {}) {
     deleteFileEndpoint: `${apiUrl}/rooms/deleteFile`,
     getRoomMemoryLimitsEndpoint: `${apiUrl}/rooms/getRoomMemoryLimits`,
     createInviteEndpoint: `${apiUrl}/rooms/createInvite`,
-    exchangeInviteIdEndpoint:`${apiUrl}/rooms/exchangeInviteId`,
-    addMessagesEndpoint:`${apiUrl}/rooms/addMessage`,
-    getMessagesEndpoint:`${apiUrl}/rooms/${roomName}/getAllMessages`
+    exchangeInviteIdEndpoint: `${apiUrl}/rooms/exchangeInviteId`,
+    addMessagesEndpoint: `${apiUrl}/rooms/addMessage`,
+    getMessagesEndpoint: `${apiUrl}/rooms/${roomName}/getAllMessages`,
+    getAllUsersEndpoint: `${apiUrl}/rooms/${roomName}/getAllUsers`,
   }
 }
 
 export function usePaths() {
   return {
     authPath: `/auth`,
-    invitePath:`invite`
+    invitePath: `invite`,
   }
 }

@@ -9,7 +9,12 @@ import { usePathname } from 'next/navigation'
 import LogoutButton from '../logoutButton/logoutButton'
 import CreateInviteButton from '../createInviteButton/createInviteButton'
 
-export default function HamburgerMenu({ children }: { children?: React.ReactNode }) {
+interface Props {
+  children?: React.ReactNode
+  iconName?: string
+}
+
+export default function HamburgerMenu({ children, iconName='menu' }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
@@ -34,8 +39,8 @@ export default function HamburgerMenu({ children }: { children?: React.ReactNode
     <>
       {/* Button */}
       <div className="size-full">
-        <Button variant='rounded' onClick={toggleMenu}>
-          <GoogleIcon iconName="menu" />
+        <Button variant="rounded" onClick={toggleMenu}>
+          <GoogleIcon iconName={iconName} />
         </Button>
       </div>
 
@@ -46,23 +51,12 @@ export default function HamburgerMenu({ children }: { children?: React.ReactNode
              transition-transform duration-300 ease-in-out p-5 z-[50]
              ${isOpen ? 'transform translate-x-0' : 'transform translate-x-full'}`}
         >
-          <div ref={menuRef} className="flex flex-col gap-5 [&>*]:h-10 relative">
+          <div ref={menuRef} className="flex flex-col gap-5 [&>button]:h-10 relative">
             {/* Button that close menu */}
-            <Button variant='rounded' onClick={toggleMenu}>
+            <Button variant="rounded" onClick={toggleMenu}>
               <GoogleIcon iconName="close" />
             </Button>
-            <Link href={'https://whole-proven-mullet.ngrok-free.app'}>
-              <Button variant='rounded'>Prove big api</Button>
-            </Link>
 
-            <ThemeSwitcher />
-
-            {pathname === '/' && (
-              <>
-                <CreateInviteButton />
-                <LogoutButton />
-              </>
-            )}
             {children}
           </div>
         </div>,

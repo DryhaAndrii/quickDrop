@@ -21,7 +21,7 @@ export class Room {
   }[]
 
   @Column('json', { default: () => "'[]'" })
-  users: { nickname: string; tokenIssuedAt: Date }[]
+  users: { nickname: string; tokenIssuedAt: Date; afk: boolean; lastAfkCheck: Date }[]
 
   @Column('json', { default: () => "'[]'" })
   files: {

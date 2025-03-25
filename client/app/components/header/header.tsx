@@ -6,6 +6,11 @@ import { roomNameAtom } from '@/store/roomName'
 import HamburgerMenu from '../hamburgerMenu/hamburgerMenu'
 import { apiAtom } from '@/store/apiUrl'
 import { BIG_API_URL } from '@/environments'
+import Link from 'next/link'
+import Button from '../button/button'
+import { ThemeSwitcher } from '../theme/theme'
+import CreateInviteButton from '../createInviteButton/createInviteButton'
+import LogoutButton from '../logoutButton/logoutButton'
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -55,7 +60,20 @@ export default function Header() {
 
       {/* Button that open hamburger menu */}
       <div className="size-10 absolute right-0  ">
-        <HamburgerMenu />
+        <HamburgerMenu>
+          <Link href={'https://whole-proven-mullet.ngrok-free.app'}>
+            <Button variant="rounded">Prove big api</Button>
+          </Link>
+
+          <ThemeSwitcher />
+
+          {pathname === '/' && (
+            <>
+              <CreateInviteButton />
+              <LogoutButton />
+            </>
+          )}
+        </HamburgerMenu>
       </div>
     </header>
   )

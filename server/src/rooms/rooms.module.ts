@@ -22,6 +22,7 @@ import { InviteController } from './controllers/invite.controller'
 import { InviteService } from './services/invite.service'
 import { MessagesService } from './services/messages.service'
 import { MessagesController } from './controllers/messages.controller'
+import { GetAllUsersController } from './controllers/getAllUsers.controller'
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -55,6 +56,7 @@ import { MessagesController } from './controllers/messages.controller'
     GetRoomMemoryLimitsController,
     InviteController,
     MessagesController,
+    GetAllUsersController,
   ],
 })
 export class RoomsModule {}
