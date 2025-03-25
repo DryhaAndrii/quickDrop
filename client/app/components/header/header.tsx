@@ -62,7 +62,9 @@ export default function Header() {
       <div className="size-10 absolute right-0  ">
         <HamburgerMenu>
           <Link href={'https://whole-proven-mullet.ngrok-free.app'}>
-            <Button variant="rounded">Prove big api</Button>
+            <div className='h-10'>
+              <Button variant="rounded">Prove big api</Button>
+            </div>
           </Link>
 
           <ThemeSwitcher />

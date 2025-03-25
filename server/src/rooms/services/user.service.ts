@@ -85,11 +85,11 @@ export class UserService implements OnModuleInit {
     const user = room.users.find((user) => user.nickname === nickname)
 
     if (user) {
-      user.lastAfkCheck = new Date() // Обновляем время последнего запроса
-      user.afk = false // Сбрасываем AFK
+      user.lastAfkCheck = new Date()
+      user.afk = false
     }
 
-    await this.roomsRepository.save(room) // Сохраняем изменения в БД
+    await this.roomsRepository.save(room)
 
     return room.users
   }
@@ -102,7 +102,7 @@ export class UserService implements OnModuleInit {
 
       for (const user of room.users) {
         if (!user.afk && now.getTime() - new Date(user.lastAfkCheck).getTime() > 10000) {
-          user.afk = true // Если прошло 10 секунд без запроса — ставим AFK
+          user.afk = true
           updated = true
         }
       }

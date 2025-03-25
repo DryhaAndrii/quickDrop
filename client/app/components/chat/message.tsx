@@ -37,7 +37,7 @@ export default memo(function Message({ message }: Props) {
   return (
     <div className={`size-full flex ${alignMessageStyle}`}>
       <div
-        className={`border-${messageTextColor} border-[1px] w-auto max-w-96 p-2 rounded-lg text-${messageTextColor} bg-${messageBgColor}`}
+        className={`border-${messageBgColor} border-[1px] w-auto max-w-96 p-2 rounded-lg text-${messageTextColor} bg-${messageBgColor}`}
       >
         <TextContainer style={alignMessageStyle}>
           <p className="text-[10px] break-words">{message.authorNickname}</p>
