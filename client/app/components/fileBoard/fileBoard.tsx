@@ -95,7 +95,6 @@ export default function FileBoard() {
       }
       setUploadProgress(0)
       hideLoading()
-      //setRoomSize(roomSize + filesSize)
     })
 
     // Error handling
@@ -134,10 +133,10 @@ export default function FileBoard() {
       {files.length > 0 && (
         <div className="flex gap-4 h-10">
           <div className="flex-grow">
-            <Button onClick={handleUpload}>Upload Files</Button>
+            <Button variant='rounded' onClick={handleUpload}>Upload Files</Button>
           </div>
           <div className="w-24">
-            <Button onClick={clearFiles}>Cancel</Button>
+            <Button variant='rounded' onClick={clearFiles}>Cancel</Button>
           </div>
         </div>
       )}

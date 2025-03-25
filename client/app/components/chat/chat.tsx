@@ -6,9 +6,9 @@ import { nicknameAtom } from '@/store/nickname'
 import { useEndpoints } from '@/endpointsAndPaths'
 import { fetchData } from '@/app/functionsAndHooks/fetch'
 import Loading, { useLoading } from '@/app/components/loading/loading'
-import Message from './message'
 import { MessageType } from '@/types/message'
 import MessagesContainer from './messagesContainer'
+import HamburgerMenu from '../hamburgerMenu/hamburgerMenu'
 
 export default function Chat() {
   const [messages, setMessages] = useState<MessageType[]>([])
@@ -38,7 +38,6 @@ export default function Chat() {
     }
     const response = await fetchData<any>(getMessagesEndpoint, undefined, undefined, options)
 
-    // Сравниваем новые сообщения с текущими
     if (JSON.stringify(response.messages) !== JSON.stringify(messages)) {
       setMessages(response.messages)
     }
@@ -66,6 +65,7 @@ export default function Chat() {
     <div className="shadow-insetShadow rounded-lg p-2 md:p-4 flex flex-col gap-4">
       <Loading isShow={isShow} />
       <h3 className="text-lg font-bold text-foreground text-center">Chat</h3>
+
       {messages && messages.length > 0 && <MessagesContainer messages={messages} />}
 
       <MessageInput handleMessage={handleMessage} />

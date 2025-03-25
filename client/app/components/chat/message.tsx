@@ -11,16 +11,14 @@ export default memo(function Message({ message }: Props) {
   const [nickname, __] = useAtom(nicknameAtom)
   const formattedDate = new Date(message.createdAt).toLocaleString()
 
-  useEffect(() => {
-    console.log('Message was rerendered')
-  }, [])
-
   const userMessage = message.authorNickname === nickname
   const alignMessageStyle = userMessage ? 'justify-end' : 'justify-start'
+  const messageBgColor = userMessage ? 'foreground' : 'none';
+  const messageTextColor = userMessage ? 'background' : 'foreground';
 
   return (
     <div className={`size-full flex ${alignMessageStyle}`}>
-      <div className="border-foreground border-[1px] w-auto max-w-96 p-2 rounded-lg text-foreground">
+      <div className={`border-${messageTextColor} border-[1px] w-auto max-w-96 p-2 rounded-lg text-${messageTextColor} bg-${messageBgColor}`}>
         <TextContainer style={alignMessageStyle}>
           <p className="text-[10px] break-words">{message.authorNickname}</p>
         </TextContainer>

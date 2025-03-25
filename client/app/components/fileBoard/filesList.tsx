@@ -112,12 +112,12 @@ const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => 
               {(+file.size / 1024 / 1024).toFixed(2)} mb
             </p>
             <div className="size-10 shrink-0">
-              <Button onClick={() => downloadFile(file)}>
+              <Button variant='rounded' onClick={() => downloadFile(file)}>
                 <GoogleIcon iconName="download" />
               </Button>
             </div>
             <div className="size-10 shrink-0">
-              <Button onClick={() => deleteFile(file)}>
+              <Button variant='rounded' onClick={() => deleteFile(file)}>
                 <GoogleIcon iconName="delete" />
               </Button>
             </div>
