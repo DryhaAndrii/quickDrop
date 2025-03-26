@@ -13,18 +13,15 @@ export function useEndpoints({ roomName = '' }: useEndpointsProps = {}) {
     checkRoomAuthEndpoint: `${apiUrl}/rooms/checkToken`,
     logoutEndpoint: `${apiUrl}/rooms/logout`,
     saveFileEndpoint: `${apiUrl}/rooms/saveFiles`,
-    getRoomFilesEndpoint: `${apiUrl}/rooms/${roomName}/files`,
     downloadFileEndpoint: `${apiUrl}/rooms/${roomName}/download/`,
     deleteFileEndpoint: `${apiUrl}/rooms/deleteFile`,
     getRoomMemoryLimitsEndpoint: `${apiUrl}/rooms/getRoomMemoryLimits`,
     createInviteEndpoint: `${apiUrl}/rooms/createInvite`,
     exchangeInviteIdEndpoint: `${apiUrl}/rooms/exchangeInviteId`,
     addMessagesEndpoint: `${apiUrl}/rooms/addMessage`,
-    getMessagesEndpoint: `${apiUrl}/rooms/${roomName}/getAllMessages`,
-    getAllUsersEndpoint: `${apiUrl}/rooms/${roomName}/getAllUsers`,
+    getRoomInfoEndpoint: `${apiUrl}/rooms/${roomName}/roomInfo`,
   }
 }
-
 export function usePaths() {
   return {
     authPath: `/auth`,

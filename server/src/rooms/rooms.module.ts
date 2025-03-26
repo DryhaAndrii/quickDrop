@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Room } from '@/src/rooms/room.entity'
@@ -10,7 +10,6 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { ConfigService } from '@nestjs/config'
 import { LogoutController } from './controllers/logout.controller'
 import { SavesFileController } from './controllers/saveFile.controller'
-import { GetRoomFilesController } from './controllers/getRoomFiles.controller'
 import { DownloadFileController } from './controllers/downloadFile.controller'
 import { CleanupService } from './services/cleanup.service'
 import { FilesService } from './services/files.service'
@@ -22,7 +21,8 @@ import { InviteController } from './controllers/invite.controller'
 import { InviteService } from './services/invite.service'
 import { MessagesService } from './services/messages.service'
 import { MessagesController } from './controllers/messages.controller'
-import { GetAllUsersController } from './controllers/getAllUsers.controller'
+import { CheckTokenMiddleware } from './middlewares/checkTokenMiddleware'
+import { GetRoomInfoController } from './controllers/getRoomInfo.controller'
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -50,13 +50,16 @@ import { GetAllUsersController } from './controllers/getAllUsers.controller'
     CheckTokenController,
     LogoutController,
     SavesFileController,
-    GetRoomFilesController,
     DownloadFileController,
     DeleteFileController,
     GetRoomMemoryLimitsController,
     InviteController,
     MessagesController,
-    GetAllUsersController,
+    GetRoomInfoController,
   ],
 })
-export class RoomsModule {}
+export class RoomsModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CheckTokenMiddleware).forRoutes('rooms/:roomName/roomInfo/:nickname')
+  }
+}

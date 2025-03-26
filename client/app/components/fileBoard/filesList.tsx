@@ -1,6 +1,5 @@
 import { fetchData } from '@/app/functionsAndHooks/fetch'
-import { File } from '@/types/file'
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react'
+import { FileType } from '@/types/file'
 import { useEndpoints } from '@/endpointsAndPaths'
 import Loading, { useLoading } from '../loading/loading'
 import { useAtom } from 'jotai'
@@ -9,58 +8,29 @@ import Button from '../button/button'
 import GoogleIcon from '../googleIcon/googleIcon'
 import { nicknameAtom } from '@/store/nickname'
 import toast from 'react-hot-toast'
+import { Dispatch, memo, SetStateAction, useEffect } from 'react'
 
-interface FilesListProps {
-  setUploadedFilesSize: React.Dispatch<React.SetStateAction<number>>
+interface Props {
+  files: FileType[]
+  getRoomInfo: () => void
+  setRoomSize: Dispatch<SetStateAction<number>>
 }
 
-const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => {
-  const [files, setFiles] = useState<File[]>([])
+export default memo(function FilesList({ files, getRoomInfo, setRoomSize }: Props) {
   const [roomName, _] = useAtom(roomNameAtom)
   const [nickname, __] = useAtom(nicknameAtom)
-  const { getRoomFilesEndpoint, downloadFileEndpoint, deleteFileEndpoint } = useEndpoints({
+  const { downloadFileEndpoint, deleteFileEndpoint } = useEndpoints({
     roomName,
   })
   const { hideLoading, showLoading, isShow } = useLoading()
 
   useEffect(() => {
-    if (!roomName) return
+    const newSize = files.reduce((acc, file) => acc + Number(file.size), 0)
+    setRoomSize(newSize)
+  }, [files])
 
-    const fetchFiles = async () => {
-      await getRoomFiles()
-    }
-
-    fetchFiles()
-
-    const intervalId = setInterval(fetchFiles, 5000)
-
-    return () => clearInterval(intervalId)
-  }, [roomName])
-
-  async function getRoomFiles() {
-    const options = {
-      method: 'GET',
-      credentials: 'include',
-    }
-    const response = await fetchData<any>(getRoomFilesEndpoint, undefined, undefined, options)
-
-    if (response.files) {
-      setFiles(response.files)
-      const filesSize = response.files.reduce(
-        (acc: any, file: { size: any }) => acc + Number(file.size),
-        0,
-      )
-      setUploadedFilesSize(filesSize)
-    }
-  }
-
-  useImperativeHandle(ref, () => ({
-    refreshFiles: getRoomFiles,
-  }))
-
-  function downloadFile(file: File) {
+  function downloadFile(file: FileType) {
     const link = document.createElement('a')
-
     link.href = `${downloadFileEndpoint}${file.storedName}`
     link.setAttribute('download', file.originalName)
     link.setAttribute('target', '_blank')
@@ -70,7 +40,7 @@ const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => 
     document.body.removeChild(link)
   }
 
-  async function deleteFile(file: File) {
+  async function deleteFile(file: FileType) {
     if (nickname !== file.creator) {
       toast.error('Only creator can delete file')
       return
@@ -86,8 +56,7 @@ const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => 
       hideLoading,
       options,
     )
-
-    await getRoomFiles()
+    await getRoomInfo()
   }
 
   return (
@@ -112,12 +81,12 @@ const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => 
               {(+file.size / 1024 / 1024).toFixed(2)} mb
             </p>
             <div className="size-10 shrink-0">
-              <Button variant='rounded' onClick={() => downloadFile(file)}>
+              <Button variant="rounded" onClick={() => downloadFile(file)}>
                 <GoogleIcon iconName="download" />
               </Button>
             </div>
             <div className="size-10 shrink-0">
-              <Button variant='rounded' onClick={() => deleteFile(file)}>
+              <Button variant="rounded" onClick={() => deleteFile(file)}>
                 <GoogleIcon iconName="delete" />
               </Button>
             </div>
@@ -127,5 +96,3 @@ const FilesList = forwardRef(({ setUploadedFilesSize }: FilesListProps, ref) => 
     </>
   )
 })
-
-export default FilesList

@@ -1,4 +1,4 @@
-export interface File {
+export interface FileType {
   originalName: string
   creator:string
   storedName: string

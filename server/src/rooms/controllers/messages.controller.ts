@@ -1,4 +1,4 @@
-import { Controller, Res, Post, Body, Get, Param } from '@nestjs/common'
+import { Controller, Res, Post, Body } from '@nestjs/common'
 import { Response } from 'express'
 import { MessagesService } from '../services/messages.service'
 
@@ -25,14 +25,5 @@ export class MessagesController {
         .status(500)
         .json({ message: 'Failed to add message', error: (error as Error).message })
     }
-  }
-
-  @Get(':roomName/getAllMessages')
-  async getRoomFiles(@Param('roomName') roomName: string, @Res() res: Response) {
-    const messages = await this.messagesService.getAllMessages(roomName)
-    if (!messages || messages.length === 0) {
-      return res.json({ message: 'No messages in this room', messages })
-    }
-    return res.json({ messages })
   }
 }

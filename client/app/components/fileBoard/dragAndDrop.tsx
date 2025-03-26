@@ -13,7 +13,7 @@ const DragAndDrop: React.FC<DragAndDropProps> = ({ onFilesChange }) => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     multiple: true,
-    maxSize: 1000 * 1024 * 1024, // 1000MB
+    maxSize: 10000 * 1024 * 1024, // 10000MB
   })
 
   return (

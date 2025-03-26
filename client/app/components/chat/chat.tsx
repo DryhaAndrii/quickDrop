@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import MessageInput from './messageInput'
 import { useAtom } from 'jotai'
 import { roomNameAtom } from '@/store/roomName'
@@ -8,41 +7,22 @@ import { fetchData } from '@/app/functionsAndHooks/fetch'
 import Loading, { useLoading } from '@/app/components/loading/loading'
 import { MessageType } from '@/types/message'
 import MessagesContainer from './messagesContainer'
-import HamburgerMenu from '../hamburgerMenu/hamburgerMenu'
 import Users from './users'
+import { UserType } from '@/types/user'
 
-export default function Chat() {
-  const [messages, setMessages] = useState<MessageType[]>([])
+interface Props {
+  messages: MessageType[]
+  users: UserType[]
+  getRoomInfo: () => void
+}
+
+export default function Chat({ messages, getRoomInfo, users }: Props) {
   const [roomName, _] = useAtom(roomNameAtom)
   const [nickname, __] = useAtom(nicknameAtom)
-  const { addMessagesEndpoint, getMessagesEndpoint } = useEndpoints({
+  const { addMessagesEndpoint } = useEndpoints({
     roomName,
   })
   const { hideLoading, showLoading, isShow } = useLoading()
-
-  useEffect(() => {
-    const fetchMessages = async () => {
-      await getMessages()
-    }
-
-    fetchMessages()
-
-    const intervalId = setInterval(fetchMessages, 5000)
-
-    return () => clearInterval(intervalId)
-  }, [])
-
-  async function getMessages() {
-    const options = {
-      method: 'GET',
-      credentials: 'include',
-    }
-    const response = await fetchData<any>(getMessagesEndpoint, undefined, undefined, options)
-
-    if (JSON.stringify(response.messages) !== JSON.stringify(messages)) {
-      setMessages(response.messages)
-    }
-  }
 
   async function handleMessage(message: any) {
     const url = addMessagesEndpoint
@@ -59,14 +39,14 @@ export default function Chat() {
     }
     const response = await fetchData<any>(url, showLoading, hideLoading, options)
 
-    getMessages()
+    getRoomInfo()
   }
 
   return (
     <div className="shadow-insetShadow rounded-lg p-2 md:p-4 flex flex-col gap-4 relative">
       <Loading isShow={isShow} />
       <h3 className="text-lg font-bold text-foreground text-center">Chat</h3>
-      <Users />
+      <Users users={users} />
 
       {messages && messages.length > 0 && <MessagesContainer messages={messages} />}
 
