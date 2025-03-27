@@ -38,13 +38,13 @@ export default memo(function Message({ message }: Props) {
         className={`w-auto max-w-96 p-2 rounded-lg text-background bg-foreground`}
       >
         <TextContainer style={alignMessageStyle}>
-          <p className="text-[10px] break-words">{message.authorNickname}</p>
+          <p className="text-[10px] break-words max-w-full">{message.authorNickname}</p>
         </TextContainer>
         <TextContainer style={alignMessageStyle}>
-          <p className="break-words">{message.text}</p>
+          <p className="break-words max-w-full">{message.text}</p>
         </TextContainer>
         <TextContainer style={alignMessageStyle}>
-          <p className="text-[10px] break-words">{formattedDate}</p>
+          <p className="text-[10px] break-words max-w-full">{formattedDate}</p>
         </TextContainer>
       </div>
     </div>
