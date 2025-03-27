@@ -38,10 +38,15 @@ export class FilesService {
     }
     if (!existsSync(filesDir)) mkdirSync(filesDir)
 
+    const timestamp = Date.now()
+    let counter = 0
+
     const savedFilePaths = await Promise.all(
       files.map(async (file) => {
         const fileBuffer = await readFile(file.path)
-        const uniqueFileName = this.generateUniqueFileName(file.originalname)
+        const uniqueFileName = this.generateUniqueFileName(
+          `${timestamp}_${counter++}_${file.originalname}`,
+        )
         const finalPath = join(filesDir, uniqueFileName)
         await writeFile(finalPath, fileBuffer)
         return {
@@ -76,26 +81,22 @@ export class FilesService {
       throw new NotFoundException(`Room "${roomName}" not found`)
     }
 
-    // Находим файл в массиве files
     const fileIndex = room.files.findIndex((file) => file.storedName === storedName)
 
     if (fileIndex === -1) {
       throw new NotFoundException(`File "${storedName}" not found in room "${roomName}"`)
     }
 
-    // Удаляем файл из файловой системы
     const filePath = join('uploads', `room_${roomName}`, 'files', storedName)
 
     if (existsSync(filePath)) {
-      unlinkSync(filePath) // Удаляем файл
+      unlinkSync(filePath)
     } else {
       throw new NotFoundException(`File "${storedName}" not found in filesystem`)
     }
 
-    // Удаляем файл из массива files в комнате
     room.files.splice(fileIndex, 1)
 
-    // Сохраняем обновленную комнату в базе данных
     await this.roomsRepository.save(room)
 
     return { message: `File "${storedName}" deleted successfully` }

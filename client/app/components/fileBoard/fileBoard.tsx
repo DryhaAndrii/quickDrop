@@ -45,10 +45,10 @@ export default function FileBoard({ roomFiles, getRoomInfo }: Props) {
       return
     }
 
-    // if (roomSize + filesSize > roomMemory.maxRoomSize * 1024 * 1024) {
-    //   toast.error(`Room limit will exceeded. The limit is ${roomMemory.maxRoomSize} MB`)
-    //   return
-    // }
+    if (roomSize + filesSize > roomMemory.maxRoomSize * 1024 * 1024) {
+      toast.error(`Room limit will exceeded. The limit is ${roomMemory.maxRoomSize} MB`)
+      return
+    }
 
     const xhr = new XMLHttpRequest()
     showLoading()

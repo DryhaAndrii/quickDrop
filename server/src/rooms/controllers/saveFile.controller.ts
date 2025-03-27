@@ -139,6 +139,14 @@ export class SavesFileController {
         console.log('Folder does not exist, creating it now.')
       }
 
+      console.log(
+        'RoomFolderSize:',
+        bytesToMb(roomFolderSize, true),
+        'filesSize:',
+        bytesToMb(filesSize, true),
+        'maxRoomSize:',
+        bytesToMb(maxRoomSize, true),
+      )
       if (roomFolderSize + filesSize >= maxRoomSize) {
         console.log(
           'If we will save these files we will exceed room limit: folderSize:',
