@@ -80,6 +80,7 @@ export default function AuthForm({ handleSubmit }: AuthFormProps) {
               selectedForm === 0 ? 'Room password' : 'Come up with a password for the room'
             }
             variant="fullRounded"
+            type='password'
             name="password"
             maxLength={10}
           />

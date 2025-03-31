@@ -75,7 +75,7 @@ export default function Home() {
     return (
       <div className="w-screen flex justify-center items-center h-screen">
         <Loading isShow={true} />
-        <div className="w-[95%] h-[95%]">
+        <div className="w-[95%] h-[95%] min-w-[300px] max-w-96">
           <CentralPanel>
             <></>
           </CentralPanel>
@@ -86,7 +86,7 @@ export default function Home() {
   return (
     <div className="w-screen flex justify-center items-center h-full py-4">
       <Loading isShow={isShow} />
-      <div className="w-[95%] h-[95%]">
+      <div className="w-[95%] h-[95%] min-w-[300px] max-w-[600px]">
         <CentralPanel>
           <div className="w-full h-full flex flex-col p-2 md:p-4 gap-5">
             <Header />
