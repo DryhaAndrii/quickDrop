@@ -48,7 +48,7 @@ export default memo(function MessagesContainer({ messages }: Props) {
   return (
     <div
       ref={containerRef}
-      className="flex flex-col gap-2 max-h-96 overflow-auto custom-scroll"
+      className="flex flex-col gap-2 h-96 overflow-auto custom-scroll"
       onScroll={handleScroll}
     >
       {memoizedMessages}

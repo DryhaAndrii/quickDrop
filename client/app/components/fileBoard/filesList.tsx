@@ -62,7 +62,6 @@ export default memo(function FilesList({ files, getRoomInfo, setRoomSize }: Prop
   return (
     <>
       <Loading isShow={isShow} />
-      <h4 className="text-foreground">Files</h4>
       {files.length === 0 && <p className="text-foreground">No files in this room yet :P</p>}
       <div className="flex flex-col gap-2 text-foreground max-h-96 overflow-auto custom-scroll">
         {files.map((file, index) => (
