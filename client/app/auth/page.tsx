@@ -20,6 +20,10 @@ export default function AuthPage() {
   const router = useRouter()
 
   const handleSubmit = async (data: authFormType, url: string) => {
+    if(data.nickname==="System"){
+      toast.error("System is a reserved nickname")
+      return
+    }
     const body = {
       room: {
         roomName: data.roomName,
