@@ -21,7 +21,7 @@ cd quickdrop
 
 ### 1. Install Dependencies
 
-```bash cd client```
+```cd client```
 ```npm install```
 
 ### 2. Create Environment File
