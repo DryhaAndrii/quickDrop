@@ -12,7 +12,7 @@ A web application for uploading and sharing files, using two backend servers:
 
 ### 🧩 Clone the Repository
 
-git clone https://your-repo-url.git
+git clone https://github.com/DryhaAndrii/quickDrop.git
 cd quickdrop
 
 ---
