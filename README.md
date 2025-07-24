@@ -140,8 +140,8 @@ CLIENT_URL=http://localhost:3000
 CLIENT_TUNNEL=https://your-vscode-tunnel-url
 
 Use:
-- CLIENT_URL for local frontend development
-- CLIENT_TUNNEL when frontend is deployed but backend is local
+- CLIENT for local frontend development
+- CLIENT2 when frontend is deployed but backend is local
 
 ---
 
