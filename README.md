@@ -128,7 +128,7 @@ npm run start:prod
 | Variable                      | Description                                  | Dev Example                                 | Prod Example                                     |
 |------------------------------|----------------------------------------------|---------------------------------------------|--------------------------------------------------|
 | NEXT_PUBLIC_SMALL_API_URL    | Public or local backend for small files      | http://localhost:3002                       | https://quickdrop-7fzo.onrender.com             |
-| NEXT_PUBLIC_BIG_API_URL      | Tunnel to local backend for large file uploads | https://<VSCodeTunnel>.ms                | https://<your-ngrok-subdomain>.ngrok-free.app   |
+| NEXT_PUBLIC_BIG_API_URL      | Tunnel to local backend for large file uploads | https://VSCodeTunnel.ms                | https://<your-ngrok-subdomain>.ngrok-free.app   |
 
 ---
 
