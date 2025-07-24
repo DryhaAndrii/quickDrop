@@ -2,6 +2,10 @@ Demo: https://quick-drop-client-rho.vercel.app/
 
 # QuickDrop
 
+```bash
+  eas update --branch production --environment production --message "New production update"
+  ```
+
 A web application for uploading and sharing files, using two backend servers:
 - **Small API** — handles small files (hosted on a public server)
 - **Big API** — handles large files (runs locally and accessed via a tunnel)
