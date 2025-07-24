@@ -48,7 +48,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="w-[95%] max-w-96 flex justify-center items-center m-auto h-full">
+    <div className="flex justify-center items-center m-auto w-[95%] max-w-96">
       <Loading isShow={isShow} />
       <div className="w-full">
         <CentralPanel>

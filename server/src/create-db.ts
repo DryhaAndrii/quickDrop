@@ -5,7 +5,8 @@ dotenv.config()
 
 const { DB_URL, DB_NAME } = process.env
 
-console.log('envs:', DB_URL)
+console.log('env DB_URL:', DB_URL)
+console.log('env DB_NAME:', DB_NAME)
 
 const adminClient = new Client({
   connectionString: DB_URL,

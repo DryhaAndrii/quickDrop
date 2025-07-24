@@ -38,7 +38,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${montserrat.variable} antialiased bg-body-gradient min-h-screen flex items-center justify-center`}
+        className={`${montserrat.variable} antialiased bg-body-gradient h-dvh flex items-center justify-center`}
       >
         <Toaster />
         <ThemeProvider>
